@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>部署GitHub Page | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="部署GitHub Page环境 git nodejs hexo  配置gitHub 申请github账号，在本地生成ssh秘钥，并配置GitHub 在GitHub上创建一个与GitHub用户名一致的仓库，eg：yourUserName.github.io 将新建的仓库clone到本地目录  安装nodejs nodejs 的安装有多重方式，本例是通过nvm来安装nodejs。首先，安装nvm 。">
+<meta name="keywords" content="部署GitHub Page">
+<meta property="og:type" content="article">
+<meta property="og:title" content="部署GitHub Page">
+<meta property="og:url" content="http://yoursite.com/2017/07/03/部署GitHub-Page/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="部署GitHub Page环境 git nodejs hexo  配置gitHub 申请github账号，在本地生成ssh秘钥，并配置GitHub 在GitHub上创建一个与GitHub用户名一致的仓库，eg：yourUserName.github.io 将新建的仓库clone到本地目录  安装nodejs nodejs 的安装有多重方式，本例是通过nvm来安装nodejs。首先，安装nvm 。">
+<meta property="og:updated_time" content="2018-01-24T10:18:29.756Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="部署GitHub Page">
+<meta name="twitter:description" content="部署GitHub Page环境 git nodejs hexo  配置gitHub 申请github账号，在本地生成ssh秘钥，并配置GitHub 在GitHub上创建一个与GitHub用户名一致的仓库，eg：yourUserName.github.io 将新建的仓库clone到本地目录  安装nodejs nodejs 的安装有多重方式，本例是通过nvm来安装nodejs。首先，安装nvm 。">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Buscar"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-部署GitHub-Page" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/03/部署GitHub-Page/" class="article-date">
+  <time datetime="2017-07-03T09:45:04.000Z" itemprop="datePublished">2017-07-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      部署GitHub Page
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="部署GitHub-Page"><a href="#部署GitHub-Page" class="headerlink" title="部署GitHub Page"></a>部署GitHub Page</h4><h5 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h5><ul>
+<li>git</li>
+<li>nodejs</li>
+<li>hexo</li>
+</ul>
+<h5 id="配置gitHub"><a href="#配置gitHub" class="headerlink" title="配置gitHub"></a>配置gitHub</h5><ul>
+<li>申请github账号，在本地生成ssh秘钥，并配置GitHub</li>
+<li>在GitHub上创建一个与GitHub用户名一致的仓库，eg：yourUserName.github.io</li>
+<li>将新建的仓库clone到本地目录</li>
+</ul>
+<h5 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h5><ul>
+<li><p>nodejs 的安装有多重方式，本例是通过nvm来安装nodejs。首先，安装nvm 。</p>
+</li>
+<li><p>配置文件</p>
+<ul>
+<li>配置 <code>~/.bashrc</code> 文件</li>
+<li>配置 <code>~/.bash_profile</code> 文件</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>~/.bashrc配置</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export NVM_DIR=&quot;~/.nvm&quot;</span><br><span class="line">[ -s &quot;$NVM_DIR/nvm.sh&quot; ] &amp;&amp; . &quot;$NVM_DIR/nvm.sh&quot;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>~/.bash_profile配置</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if [ -f ~/.bashrc ]; then</span><br><span class="line">   . ~/.bashrc</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<ul>
+<li>执行sh  <code>source ~/.bash_profile</code></li>
+</ul>
+<a id="more"></a>
+<h5 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h5><ul>
+<li>安装</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>初始化</p>
+<p>  在本地新建一个文件夹A，然后在终端执行：</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># mkdir A</span><br><span class="line"># cd A</span><br><span class="line"># hexo init A</span><br><span class="line"># npm install</span><br></pre></td></tr></table></figure>
+<ul>
+<li>启动服务</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># hexo server</span><br><span class="line">[info] Hexo is running at http://localhost:4000/. Press Ctrl+C to stop.</span><br></pre></td></tr></table></figure>
+<p>这样在本地就能看到你的blog了</p>
+<h5 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># hexo new &quot;newPost&quot; 新建文章</span><br><span class="line"># vim newPost.md  编辑文章</span><br><span class="line"># hexo new page &quot;pageName&quot; #新建页面</span><br><span class="line"># hexo generate #生成静态页面至public目录</span><br><span class="line"># hexo server #启动本地服务，进行文章预览调试</span><br></pre></td></tr></table></figure>
+<p><a href="https://hexo.io/docs/" target="_blank" rel="noopener">Hexo参考</a></p>
+<h5 id="配置并发布"><a href="#配置并发布" class="headerlink" title="配置并发布"></a>配置并发布</h5><ul>
+<li>新建一篇文章</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># hexo new &quot;newPost&quot;  //会在目录下生成 source\_posts\My-New-Post.md</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>配置_config.yml</p>
+<p>  将文件中的如下内容</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Deployment</span><br><span class="line">## Docs: http://hexo.io/docs/deployment.html</span><br><span class="line">deploy:</span><br><span class="line">  type:</span><br></pre></td></tr></table></figure>
+<p>修改为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"># Deployment</span><br><span class="line">## Docs: http://hexo.io/docs/deployment.html</span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repository: git@github.com:yourUserName/yourUserName.github.io.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure>
+<ul>
+<li>发布</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># hexo deploy</span><br></pre></td></tr></table></figure>
+<h5 id="常见错误"><a href="#常见错误" class="headerlink" title="常见错误"></a>常见错误</h5><p>执行 hexo deploy 后,出现 error deployer not found:github 的错误<br>hexo 更新到3.0之后，deploy的type 的github需要改成git, 接着<br>npm install hexo-deployer-git –save 改了之后执行，然后再部署</p>
+<h4 id="日常部署步骤"><a href="#日常部署步骤" class="headerlink" title="日常部署步骤"></a>日常部署步骤</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># hexo s  //预览</span><br><span class="line"># hexo clean</span><br><span class="line"># hexo generate</span><br><span class="line"># hexo deploy</span><br></pre></td></tr></table></figure>
+<h5 id="主题安装"><a href="#主题安装" class="headerlink" title="主题安装"></a>主题安装</h5><p>hexo的支持的<a href="https://github.com/hexojs/hexo/wiki/Themes" target="_blank" rel="noopener">主题</a>很多，可以根据个人爱好随意切换主题。以安装modernist为例：</p>
+<ul>
+<li>从GitHub上clone代码到hexo的themes目录下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/heroicyang/hexo-theme-modernist.git themes/AA</span><br></pre></td></tr></table></figure>
+<p><strong>备注：在切换主题时，只需要将_config.yml配置文件中的theme对应的值指定为clone到的目录，即AA</strong></p>
+<ul>
+<li>修改hexo下_config.yml配置文件</li>
+</ul>
+<p>修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Extensions</span><br><span class="line">## Plugins: https://hexo.io/plugins/</span><br><span class="line">## Themes: https://hexo.io/themes/</span><br><span class="line">theme: landscape</span><br></pre></td></tr></table></figure>
+<p>为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Extensions</span><br><span class="line">## Plugins: https://hexo.io/plugins/</span><br><span class="line">## Themes: https://hexo.io/themes/</span><br><span class="line">theme: AA</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>配置主题</p>
+<p>  进去hexo\themes\modernist目录，编辑主题配置文件_config.yml：</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">menu:</span><br><span class="line">  Home: /</span><br><span class="line">  Archives: /archives</span><br><span class="line">  rss: /atom.xml</span><br><span class="line">archive_date_format: MMM DD</span><br><span class="line">fancybox: true</span><br><span class="line">duoshuo_shortname:</span><br><span class="line">google_analytics:</span><br><span class="line">favicon: /favicon.ico</span><br></pre></td></tr></table></figure>
+<p>进行相应的配置。</p>
+<p><strong>添加“Fork me on Github” ribbon</strong></p>
+<p>打开这个<a href="https://github.com/blog/273-github-ribbons/" target="_blank" rel="noopener">ribbon</a> 把a 标签的代码粘贴到 hexo\themes目录下的\layout\layout.xxx 中，放置在最后，记得修改你的github<br>地址</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/07/03/部署GitHub-Page/" data-id="cjcsx503r0001g60m15bxcgen" class="article-share-link">Compartir</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/部署GitHub-Page/">部署GitHub Page</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/06/30/Hexo使用方法/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Viejo</strong>
+      <div class="article-nav-title">Hexo使用方法</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/部署GitHub-Page/">部署GitHub Page</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Nube de Tags</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archivos</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Posts recientes</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/07/03/部署GitHub-Page/">部署GitHub Page</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/30/Hexo使用方法/">Hexo使用方法</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 John Doe<br>
+      Construido por <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
