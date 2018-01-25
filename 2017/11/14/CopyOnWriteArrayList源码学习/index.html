@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>CopyOnWriteArrayList源码学习 | 而今伊始，命途自闯</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言CopyOnWriteArrayList是一个线程安全的，读操作无锁，但是写操作有锁 的ArrayList。是 读写分离 思想的体现。从名字中，我们可以推断出, 这个是在 Write 时进行 Copy 数组元素的 ArrayList。是一种 空间换时间 的策略，适合读多写少的场景。 源码解析内部数据结构12345678public class CopyOnWriteArrayList&amp;lt;E">
+<meta name="keywords" content="java并发集合">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CopyOnWriteArrayList源码学习">
+<meta property="og:url" content="https://houlong123.github.io/2017/11/14/CopyOnWriteArrayList源码学习/index.html">
+<meta property="og:site_name" content="而今伊始，命途自闯">
+<meta property="og:description" content="前言CopyOnWriteArrayList是一个线程安全的，读操作无锁，但是写操作有锁 的ArrayList。是 读写分离 思想的体现。从名字中，我们可以推断出, 这个是在 Write 时进行 Copy 数组元素的 ArrayList。是一种 空间换时间 的策略，适合读多写少的场景。 源码解析内部数据结构12345678public class CopyOnWriteArrayList&amp;lt;E">
+<meta property="og:updated_time" content="2018-01-25T06:58:39.023Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CopyOnWriteArrayList源码学习">
+<meta name="twitter:description" content="前言CopyOnWriteArrayList是一个线程安全的，读操作无锁，但是写操作有锁 的ArrayList。是 读写分离 思想的体现。从名字中，我们可以推断出, 这个是在 Write 时进行 Copy 数组元素的 ArrayList。是一种 空间换时间 的策略，适合读多写少的场景。 源码解析内部数据结构12345678public class CopyOnWriteArrayList&amp;lt;E">
+  
+    <link rel="alternate" href="/atom.xml" title="而今伊始，命途自闯" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">而今伊始，命途自闯</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://houlong123.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-CopyOnWriteArrayList源码学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/14/CopyOnWriteArrayList源码学习/" class="article-date">
+  <time datetime="2017-11-14T06:56:59.000Z" itemprop="datePublished">2017-11-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      CopyOnWriteArrayList源码学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>CopyOnWriteArrayList是一个线程安全的，<strong><code>读操作无锁，但是写操作有锁</code></strong> 的ArrayList。是 <code>读写分离</code> 思想的体现。从名字中，我们可以推断出, 这个是<font color="red"><code>在 Write 时进行 Copy 数组元素的 ArrayList</code></font>。是一种 <strong><code>空间换时间</code></strong> 的策略，适合读多写少的场景。</p>
+<h4 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h4><h5 id="内部数据结构"><a href="#内部数据结构" class="headerlink" title="内部数据结构"></a>内部数据结构</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CopyOnWriteArrayList</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;, <span class="title">RandomAccess</span>, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">transient</span> ReentrantLock lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line">    <span class="comment">/** The array, accessed only via getArray/setArray. */</span></span><br><span class="line">    <span class="comment">//底层数据结构。并被volatile修饰</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> Object[] array;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这两个成员变量是该类的核心，对集合所有的<code>修改操作都需要使用lock加锁</code>，array则是整个集合的数据储存部分，关键在于该array被声明为volatile，保证了内存可见性。</p>
+<h5 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//默认创建一个元素数为0的数组，ArrayList则默认为10</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CopyOnWriteArrayList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    setArray(<span class="keyword">new</span> Object[<span class="number">0</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CopyOnWriteArrayList</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    Object[] elements;</span><br><span class="line">    <span class="keyword">if</span> (c.getClass() == CopyOnWriteArrayList.class)</span><br><span class="line">        elements = ((CopyOnWriteArrayList&lt;?&gt;)c).getArray();</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        elements = c.toArray();</span><br><span class="line">        <span class="comment">// c.toArray might (incorrectly) not return Object[] (see 6260652)</span></span><br><span class="line">        <span class="keyword">if</span> (elements.getClass() != Object[].class)</span><br><span class="line">            elements = Arrays.copyOf(elements, elements.length, Object[].class);</span><br><span class="line">    &#125;</span><br><span class="line">    setArray(elements);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CopyOnWriteArrayList</span><span class="params">(E[] toCopyIn)</span> </span>&#123;</span><br><span class="line">    setArray(Arrays.copyOf(toCopyIn, toCopyIn.length, Object[].class));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>CopyOnWriteArrayList类提供了三个构造方法，值得一提的是无参构造方法，在无参构造方法中，会默认创建一个元素数为0的数组，而ArrayList则默认为10。其他两个构造函数会将传进来的集合通过Arrays.copyOf()方法转换成一个Object类型的数组，并用array成员变量存储起来。</p>
+<h5 id="add源码"><a href="#add源码" class="headerlink" title="add源码"></a>add源码</h5><a id="more"></a>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    lock.lock();    <span class="comment">//上锁</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Object[] elements = getArray(); <span class="comment">//获取当前数组</span></span><br><span class="line">        <span class="keyword">int</span> len = elements.length;  <span class="comment">//获取当前数组的长度</span></span><br><span class="line">        <span class="comment">//创建一个比当前数组长度多1的数组</span></span><br><span class="line">        Object[] newElements = Arrays.copyOf(elements, len + <span class="number">1</span>);    <span class="comment">//每增加一个新元素，都要进行一次数组的复制消耗，所以是一种空间换时间的策略</span></span><br><span class="line">        newElements[len] = e;   <span class="comment">//将新元素置于新数组的末尾</span></span><br><span class="line">        setArray(newElements);  <span class="comment">//将newElements设置为全局array</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();  <span class="comment">//释放锁</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码逻辑：</p>
+<ol>
+<li>获取可重入锁</li>
+<li>获取当前数组及长度len</li>
+<li>将当前数组的元素拷贝到长度为len + 1 的新数组中</li>
+<li>将新元素置于新数组的尾部</li>
+<li>将新数组设置为全局array</li>
+</ol>
+<h5 id="add源码-1"><a href="#add源码-1" class="headerlink" title="add源码"></a>add源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    lock.lock();    <span class="comment">//上锁</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Object[] elements = getArray(); <span class="comment">//获取当前数组</span></span><br><span class="line">        <span class="keyword">int</span> len = elements.length;      <span class="comment">//获取当前数组的长度</span></span><br><span class="line">        <span class="keyword">if</span> (index &gt; len || index &lt; <span class="number">0</span>)   <span class="comment">//参数判断</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException(<span class="string">"Index: "</span>+index+</span><br><span class="line">                                                <span class="string">", Size: "</span>+len);</span><br><span class="line">        Object[] newElements;</span><br><span class="line">        <span class="keyword">int</span> numMoved = len - index; <span class="comment">//需要移位的数目</span></span><br><span class="line">        <span class="keyword">if</span> (numMoved == <span class="number">0</span>)  <span class="comment">//插入的元素为原数组的最后一个元素</span></span><br><span class="line">            newElements = Arrays.copyOf(elements, len + <span class="number">1</span>); <span class="comment">//将数据插入到elements.length位置上</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            newElements = <span class="keyword">new</span> Object[len + <span class="number">1</span>];</span><br><span class="line">            System.arraycopy(elements, <span class="number">0</span>, newElements, <span class="number">0</span>, index);    <span class="comment">// 将原数组 index 前的数组都拷贝到新的数组里面</span></span><br><span class="line">            System.arraycopy(elements, index, newElements, index + <span class="number">1</span>,</span><br><span class="line">                             numMoved); <span class="comment">// 将原数组 index 以后的元素都 copy到新的数组里面(包括index位置的元素)</span></span><br><span class="line">        &#125;</span><br><span class="line">        newElements[index] = element;</span><br><span class="line">        setArray(newElements);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法与上个添加方法大体实现逻辑一致，只不过是多了确认待插入元素位置的逻辑。如果待插入元素要插入的位置为数组最尾部，和上个添加方法逻辑一样。如果不是，则需要创建新数组（分两部分创建），最后将元素插入指定位置。</p>
+<h5 id="remove源码"><a href="#remove源码" class="headerlink" title="remove源码"></a>remove源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Object[] elements = getArray(); <span class="comment">//获取原数组</span></span><br><span class="line">        <span class="keyword">int</span> len = elements.length;  <span class="comment">//获取原数组长度</span></span><br><span class="line">        E oldValue = get(elements, index);  <span class="comment">//在index &gt; len时，会报数组越界错误</span></span><br><span class="line">        <span class="keyword">int</span> numMoved = len - index - <span class="number">1</span>; <span class="comment">//由上可知，numMoved &gt;= 0</span></span><br><span class="line">        <span class="keyword">if</span> (numMoved == <span class="number">0</span>)  <span class="comment">// 说明删除的元素的位置在 len - 1 上, 直接拷贝原数组的前 len - 1 个元素</span></span><br><span class="line">            setArray(Arrays.copyOf(elements, len - <span class="number">1</span>));</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            Object[] newElements = <span class="keyword">new</span> Object[len - <span class="number">1</span>];</span><br><span class="line">            System.arraycopy(elements, <span class="number">0</span>, newElements, <span class="number">0</span>, index);   <span class="comment">// 拷贝原数组 0 - index之间的元素 (index 不拷贝)</span></span><br><span class="line">            System.arraycopy(elements, index + <span class="number">1</span>, newElements, index,</span><br><span class="line">                             numMoved);     <span class="comment">// 拷贝原数组 index+1 到末尾之间的元素 (index＋1也进行拷贝)</span></span><br><span class="line">            setArray(newElements);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> oldValue;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法为删除指定索引上的元素，与在指定位置上添加元素逻辑有点相似。</p>
+<h5 id="remove源码-1"><a href="#remove源码-1" class="headerlink" title="remove源码"></a>remove源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    Object[] snapshot = getArray();</span><br><span class="line">    <span class="keyword">int</span> index = indexOf(o, snapshot, <span class="number">0</span>, snapshot.length);   <span class="comment">//获取元素o在数组中的位置。-1表示不存在</span></span><br><span class="line">    <span class="keyword">return</span> (index &lt; <span class="number">0</span>) ? <span class="keyword">false</span> : remove(o, snapshot, index);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法为删除指定元素。处理逻辑为：</p>
+<ol>
+<li>获取当前数组</li>
+<li>获取指定元素在数组中的位置index</li>
+<li>如果 <code>index &lt; 0</code> 说明在数组中没有找到指定元素，则直接返回；如果 <code>index &gt;= 0</code>，则调用内部重载方法remove</li>
+</ol>
+<h5 id="getArray源码"><a href="#getArray源码" class="headerlink" title="getArray源码"></a>getArray源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> Object[] getArray() &#123;</span><br><span class="line">    <span class="keyword">return</span> array;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>很简单，直接返回全局array。由于修饰符<code>volatile</code>保证其内存可见性。</p>
+<h5 id="indexOf源码"><a href="#indexOf源码" class="headerlink" title="indexOf源码"></a>indexOf源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">indexOf</span><span class="params">(Object o, Object[] elements,</span></span></span><br><span class="line"><span class="function"><span class="params">                           <span class="keyword">int</span> index, <span class="keyword">int</span> fence)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = index; i &lt; fence; i++)</span><br><span class="line">            <span class="keyword">if</span> (elements[i] == <span class="keyword">null</span>)</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = index; i &lt; fence; i++)</span><br><span class="line">            <span class="keyword">if</span> (o.equals(elements[i]))</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由源码可知，在确认元素的位置时，只是简单的遍历数组。在找到时，返回元素所在的位置；没有找到时，返回-1。</p>
+<h5 id="remove源码-2"><a href="#remove源码-2" class="headerlink" title="remove源码"></a>remove源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o, Object[] snapshot, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Object[] current = getArray();</span><br><span class="line">        <span class="keyword">int</span> len = current.length;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//下面的if语句的主要功能是：在数组发生变化后，重新定位要移除的元素</span></span><br><span class="line">        <span class="keyword">if</span> (snapshot != current) findIndex: &#123;   <span class="comment">//snapshot != current，表示数组被另一个线程操作过，数组元素有变化</span></span><br><span class="line">            <span class="keyword">int</span> prefix = Math.min(index, len);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; prefix; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (current[i] != snapshot[i] &amp;&amp; eq(o, current[i])) &#123;   <span class="comment">// 找出 current 数组里面 元素 o 所在的位置 i, 并且赋值给 index</span></span><br><span class="line">                    index = i;</span><br><span class="line">                    <span class="keyword">break</span> findIndex;    <span class="comment">//直接跳到findIndex:表示的括号外面</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (index &gt;= len)   <span class="comment">//则说明 元素 o 在另外的线程中已经被删除, 直接 return</span></span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            <span class="keyword">if</span> (current[index] == o)    <span class="comment">//index 位置上的元素 o 还在那边, 直接 break</span></span><br><span class="line">                <span class="keyword">break</span> findIndex;</span><br><span class="line">            index = indexOf(o, current, index, len);    <span class="comment">// 在 index 与 len 之间寻找元素, 找到位置直接接下来的代码, 没找到 直接 return</span></span><br><span class="line">            <span class="keyword">if</span> (index &lt; <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Object[] newElements = <span class="keyword">new</span> Object[len - <span class="number">1</span>];</span><br><span class="line">        System.arraycopy(current, <span class="number">0</span>, newElements, <span class="number">0</span>, index);</span><br><span class="line">        System.arraycopy(current, index + <span class="number">1</span>,</span><br><span class="line">                         newElements, index,</span><br><span class="line">                         len - index - <span class="number">1</span>);</span><br><span class="line">        setArray(newElements);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法为remove的重载方法。在调用 <code>remove(Object o)</code> 方法时，上个方法会先获取待移除元素所在的位置，然后调用重载方法 <code>remove(Object o, Object[] snapshot, int index)</code> 。在重载方法中，会判断数组是否发生了变化（snapshot != current），如果发生变化的话，则重新定位待删除元素的位置。然后执行移除操作。</p>
+<h5 id="set源码"><a href="#set源码" class="headerlink" title="set源码"></a>set源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">set</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    lock.lock();    <span class="comment">//获取锁</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Object[] elements = getArray();</span><br><span class="line">        E oldValue = get(elements, index);  <span class="comment">//获取原数组中对应index位置的元素</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (oldValue != element) &#123;  <span class="comment">//在新值与原有值不相同时</span></span><br><span class="line">            <span class="keyword">int</span> len = elements.length;</span><br><span class="line">            Object[] newElements = Arrays.copyOf(elements, len);</span><br><span class="line">            newElements[index] = element;</span><br><span class="line">            setArray(newElements);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// Not quite a no-op; ensures volatile write semantics  确保volatile写语义</span></span><br><span class="line">            setArray(elements);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> oldValue;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<font color="red"><code>到目前为止，上面所介绍的方法都是常见的修改方法。它们内部实现原理的共性都是：
+1）加锁
+2）进行一次数组的复制消耗。</code> </font>
+
+<h5 id="get源码"><a href="#get源码" class="headerlink" title="get源码"></a>get源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> get(getArray(), index);  <span class="comment">//读操作没有上锁，因为array数组是volatile修饰的</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> E <span class="title">get</span><span class="params">(Object[] a, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (E) a[index];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>get方法是直接取得该线程当前拥有的array数组，不需要额外的同步开销。因为array数组是volatile修饰的，也就是当你<font color="red"><code>对volatile进行写操作后，会将写过后的array数组强制刷新到主内存</code></font>，从而在读操作getArray()时会强制从主内存将array读出来。</p>
+<h5 id="addIfAbsent源码"><a href="#addIfAbsent源码" class="headerlink" title="addIfAbsent源码"></a>addIfAbsent源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Appends the element, if not present.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> e element to be added to this list, if absent</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> &#123;<span class="doctag">@code</span> true&#125; if the element was added</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">addIfAbsent</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    Object[] snapshot = getArray();</span><br><span class="line">    <span class="keyword">return</span> indexOf(e, snapshot, <span class="number">0</span>, snapshot.length) &gt;= <span class="number">0</span> ? <span class="keyword">false</span> :</span><br><span class="line">        addIfAbsent(e, snapshot);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法的功能为：若列表中没有待插入的元素，则进行插入操作。<code>CopyOnWriteArraySet的add方法内部原理就是调用该方法</code>。处理逻辑：</p>
+<ol>
+<li>在原数组中查找待插入元素的位置index</li>
+<li>若<code>index &gt;= 0</code>，直接返回false</li>
+<li>若<code>index &lt; 0</code>，调用重载方法 <code>addIfAbsent(E e, Object[] snapshot)</code></li>
+</ol>
+<h5 id="addIfAbsent源码-1"><a href="#addIfAbsent源码-1" class="headerlink" title="addIfAbsent源码"></a>addIfAbsent源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">addIfAbsent</span><span class="params">(E e, Object[] snapshot)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Object[] current = getArray();  <span class="comment">//获取当前数组</span></span><br><span class="line">        <span class="keyword">int</span> len = current.length;   <span class="comment">//获取当前数组的长度</span></span><br><span class="line">        <span class="keyword">if</span> (snapshot != current) &#123;  <span class="comment">//期间数组发生了变化。即其他线程有操作了该集合</span></span><br><span class="line">            <span class="comment">// Optimize for lost race to another addXXX operation</span></span><br><span class="line">            <span class="keyword">int</span> common = Math.min(snapshot.length, len);</span><br><span class="line">            <span class="comment">//在for循环中，找到，则返回false</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; common; i++)</span><br><span class="line">                <span class="keyword">if</span> (current[i] != snapshot[i] &amp;&amp; eq(e, current[i]))</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//重新定位待插入元素，如果定位到，则说明已存在，返回FALSE</span></span><br><span class="line">            <span class="keyword">if</span> (indexOf(e, current, common, len) &gt;= <span class="number">0</span>)</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//插入元素</span></span><br><span class="line">        Object[] newElements = Arrays.copyOf(current, len + <span class="number">1</span>);</span><br><span class="line">        newElements[len] = e;</span><br><span class="line">        setArray(newElements);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法的功能是：不重复的插入元素。代码逻辑：</p>
+<ol>
+<li>获取锁</li>
+<li>获取当前数组current及当前数组长度len</li>
+<li>如果期间数组发生了改变，首先通过for循环查询待插入元素是否已在数组中，是返回FALSE；若没有，则通过indexOf方法定位带插入元素的位置，定位到，返回FALSE。否则，执行第4步。</li>
+<li>创建新数组，并将原数组元素拷贝到新数组</li>
+<li>在新数组尾部添加待插入元素</li>
+<li>设置全局array数组</li>
+<li>返回true。</li>
+</ol>
+<h5 id="备注："><a href="#备注：" class="headerlink" title="备注："></a>备注：</h5><font color="#723638"><em>CopyOnWriteArraySet的原理场景和CopyOnWriteArrayList一样，只不过是不能有重复的元素放入，它里面包含一个CopyOnWriteArrayList，真正调用的方法都 是CopyOnWriteArrayList的方法</em></font>
+
+
+
+<h4 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h4><p><a href="http://www.jianshu.com/p/8c66e2e7411c" target="_blank" rel="noopener">CopyOnWriteArrayList 源码分析 (基于Java 8)</a></p>
+<p><a href="http://blog.csdn.net/seu_calvin/article/details/70198220" target="_blank" rel="noopener">Java技术——CopyOnWriteArrayList源码解析</a></p>
+<p><a href="https://my.oschina.net/summerpxy/blog/405728" target="_blank" rel="noopener">CopyOnWriteArrayList源码分析</a></p>
+<p><a href="http://blog.csdn.net/Evankaka/article/details/51832938" target="_blank" rel="noopener">Java并发编程与技术内幕:CopyOnWriteArrayList、CopyOnWriteArraySet源码解析</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/11/14/CopyOnWriteArrayList源码学习/" data-id="cjcu8ctes000gaq0mb2wjqutx" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/11/16/ArrayBlockingQueue源码学习/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          ArrayBlockingQueue源码学习
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/11/10/ConcurrentLinkedQueue源码学习/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">ConcurrentLinkedQueue源码学习</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dokuwiki部署/">dokuwiki部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java基础集合/">java基础集合</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发/">java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发锁/">java并发锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发集合/">java并发集合</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/部署GitHub-Page/">部署GitHub Page</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 14px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/01/25/hahh/">hahh</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/23/ArrayList源码学习/">ArrayList源码学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/19/java基础集合源码学习之AbstractList学习/">java基础集合源码学习之AbstractList学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/17/java基础集合源码学习之AbstractCollection学习/">java基础集合源码学习之AbstractCollection学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/08/CyclicBarrier源码学习/">CyclicBarrier源码学习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 houlong<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+  <a href="https://github.com/houlong123"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1000;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+</body>
+</html>

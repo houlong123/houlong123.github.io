@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>JdbcTemplate学习 | 而今伊始，命途自闯</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="JdbcTemplate是spring对jdbc的封装，提供了操作数据库的模板。  类图类图分析：  JdbcOperations接口：定义了JdbcTemplate可以使用的JDBC操作集合。从查询到更新都进行了声明。 JdbcAccessor抽象类：主要为子类提供了一些公用属性声明。 DataSource：Spring数据访问层对数据库资源的访问，全都建立在javax.sql.DataSou">
+<meta name="keywords" content="Spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JdbcTemplate学习">
+<meta property="og:url" content="https://houlong123.github.io/2017/08/29/JdbcTemplate学习/index.html">
+<meta property="og:site_name" content="而今伊始，命途自闯">
+<meta property="og:description" content="JdbcTemplate是spring对jdbc的封装，提供了操作数据库的模板。  类图类图分析：  JdbcOperations接口：定义了JdbcTemplate可以使用的JDBC操作集合。从查询到更新都进行了声明。 JdbcAccessor抽象类：主要为子类提供了一些公用属性声明。 DataSource：Spring数据访问层对数据库资源的访问，全都建立在javax.sql.DataSou">
+<meta property="og:image" content="http://thumbsnap.com/i/y3SfJjNH.png">
+<meta property="og:updated_time" content="2018-01-25T06:18:37.972Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JdbcTemplate学习">
+<meta name="twitter:description" content="JdbcTemplate是spring对jdbc的封装，提供了操作数据库的模板。  类图类图分析：  JdbcOperations接口：定义了JdbcTemplate可以使用的JDBC操作集合。从查询到更新都进行了声明。 JdbcAccessor抽象类：主要为子类提供了一些公用属性声明。 DataSource：Spring数据访问层对数据库资源的访问，全都建立在javax.sql.DataSou">
+<meta name="twitter:image" content="http://thumbsnap.com/i/y3SfJjNH.png">
+  
+    <link rel="alternate" href="/atom.xml" title="而今伊始，命途自闯" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">而今伊始，命途自闯</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://houlong123.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-JdbcTemplate学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/29/JdbcTemplate学习/" class="article-date">
+  <time datetime="2017-08-29T06:17:00.000Z" itemprop="datePublished">2017-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      JdbcTemplate学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>JdbcTemplate是spring对jdbc的封装，提供了操作数据库的模板。</p>
+</blockquote>
+<h4 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h4><p><img src="http://thumbsnap.com/i/y3SfJjNH.png" alt="JdbcTemplate类图"><br>类图分析：</p>
+<ul>
+<li><strong>JdbcOperations接口</strong>：定义了JdbcTemplate可以使用的JDBC操作集合。从查询到更新都进行了声明。</li>
+<li><strong>JdbcAccessor抽象类</strong>：主要为子类提供了一些公用属性声明。<ul>
+<li>DataSource：Spring数据访问层对数据库资源的访问，全都建立在<code>javax.sql.DataSource</code>标准接口之上。DataSource可以看做JDBC的连接工厂。</li>
+<li>SQLExceptionTranslator：负责Spring对SQLException的转译。实现了SQLException到其统一的数据访问异常体系的转换。</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+<p>JdbcTemplate主要是通过 <a href="http://blog.csdn.net/zhengzhb/article/details/7405608" target="_blank" rel="noopener">模板方法模式</a> 对基于JDBC的数据访问代码进行统一封装。</p>
+<h4 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h4><p>一般我们都是通过xml文件配置spring的JDBC,配置如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="attr">xmlns:tx</span>=<span class="string">"http://www.springframework.org/schema/tx"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">"</span></span></span><br><span class="line"><span class="tag"><span class="string">     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"dataSource"</span> <span class="attr">class</span>=<span class="string">"com.alibaba.druid.pool.DruidDataSource"</span> <span class="attr">init-method</span>=<span class="string">"init"</span> <span class="attr">destroy-method</span>=<span class="string">"close"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"url"</span> <span class="attr">value</span>=<span class="string">"$&#123;mysql.url&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"username"</span> <span class="attr">value</span>=<span class="string">"$&#123;mysql.username&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"password"</span> <span class="attr">value</span>=<span class="string">"$&#123;mysql.password&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"poolPreparedStatements"</span> <span class="attr">value</span>=<span class="string">"true"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"maxPoolPreparedStatementPerConnectionSize"</span> <span class="attr">value</span>=<span class="string">"20"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"jdbcTemplate"</span> <span class="attr">class</span>=<span class="string">"org.springframework.jdbc.core.JdbcTemplate"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"dataSource"</span>&gt;</span><span class="tag">&lt;<span class="name">ref</span> <span class="attr">bean</span>=<span class="string">"dataSource"</span>/&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>由JdbcTemplate的源码，可知上述配置是在初始化数据源：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">JdbcTemplate</span><span class="params">(DataSource dataSource)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//设置抽象类JdbcAccessor中的dataSource对象</span></span><br><span class="line">    <span class="keyword">this</span>.setDataSource(dataSource);</span><br><span class="line">    <span class="comment">//设置抽象类JdbcAccessor中的exceptionTranslator对象，用于转译SQLException对象，实现统一的数据访问异常处理。</span></span><br><span class="line">    <span class="keyword">this</span>.afterPropertiesSet();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在设置好了数据源后，就可以进行相应的JDBC操作，下面以<code>query</code>方法进行源码分析。</p>
+<h5 id="query源码"><a href="#query源码" class="headerlink" title="query源码"></a>query源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">query</span><span class="params">(<span class="keyword">final</span> String sql, <span class="keyword">final</span> ResultSetExtractor&lt;T&gt; rse)</span> <span class="keyword">throws</span> DataAccessException </span>&#123;</span><br><span class="line">        Assert.notNull(sql, <span class="string">"SQL must not be null"</span>);</span><br><span class="line">        Assert.notNull(rse, <span class="string">"ResultSetExtractor must not be null"</span>);</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.logger.isDebugEnabled()) &#123;</span><br><span class="line">            <span class="keyword">this</span>.logger.debug(<span class="string">"Executing SQL query ["</span> + sql + <span class="string">"]"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//定义了内部类，实现了StatementCallback和SqlProvider接口。</span></span><br><span class="line">        <span class="class"><span class="keyword">class</span> <span class="title">QueryStatementCallback</span> <span class="keyword">implements</span> <span class="title">StatementCallback</span>&lt;<span class="title">T</span>&gt;, <span class="title">SqlProvider</span> </span>&#123;</span><br><span class="line">            QueryStatementCallback() &#123;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> T <span class="title">doInStatement</span><span class="params">(Statement stmt)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">                ResultSet rs = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">                Object var4;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    rs = stmt.executeQuery(sql);</span><br><span class="line">                    ResultSet rsToUse = rs;</span><br><span class="line">                    <span class="keyword">if</span>(JdbcTemplate.<span class="keyword">this</span>.nativeJdbcExtractor != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        rsToUse = JdbcTemplate.<span class="keyword">this</span>.nativeJdbcExtractor.getNativeResultSet(rs);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    var4 = rse.extractData(rsToUse);</span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    JdbcUtils.closeResultSet(rs);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> var4;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">getSql</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> sql;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//调用JdbcTemplate类中的execute方法</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.execute((StatementCallback)(<span class="keyword">new</span> QueryStatementCallback()));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>功能分析：<br>在方法中，定义了一个内部类，实现了<code>StatementCallback接口</code>和<code>SqlProvider接口</code>，然后声明一个匿名类参数传递给<code>execute()</code>方法。</p>
+<h5 id="execute源码"><a href="#execute源码" class="headerlink" title="execute源码"></a>execute源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">execute</span><span class="params">(StatementCallback&lt;T&gt; action)</span> <span class="keyword">throws</span> DataAccessException </span>&#123;</span><br><span class="line">        Assert.notNull(action, <span class="string">"Callback object must not be null"</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//获取Connection对象。与直接从DataSource取得Connection不同，DataSourceUtils会将取得的Connection绑定到当前线程，以便在使用Spring提供的统一事务抽象层进行事务管理的时候使用。</span></span><br><span class="line">        Connection con = DataSourceUtils.getConnection(<span class="keyword">this</span>.getDataSource());</span><br><span class="line">        Statement stmt = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        Object var7;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Connection ex = con;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>.nativeJdbcExtractor != <span class="keyword">null</span> &amp;&amp; <span class="keyword">this</span>.nativeJdbcExtractor.isNativeConnectionNecessaryForNativeStatements()) &#123;</span><br><span class="line">                ex = <span class="keyword">this</span>.nativeJdbcExtractor.getNativeConnection(con);</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">//JAVA JDBC</span></span><br><span class="line">            stmt = ex.createStatement();</span><br><span class="line">            </span><br><span class="line">            <span class="comment">//设置Statement对象，比如设置每次获取的最大结果集，查询超时时间等。</span></span><br><span class="line">            <span class="keyword">this</span>.applyStatementSettings(stmt);</span><br><span class="line">            Statement stmtToUse = stmt;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>.nativeJdbcExtractor != <span class="keyword">null</span>) &#123;</span><br><span class="line">                stmtToUse = <span class="keyword">this</span>.nativeJdbcExtractor.getNativeStatement(stmt);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//回调，将相应的资源通过参数传递给回调函数。回调函数使用提供的资源进行相应的操作。类似于模板方法模式中的抽象方法。</span></span><br><span class="line">            Object result = action.doInStatement(stmtToUse);</span><br><span class="line">            <span class="keyword">this</span>.handleWarnings(stmt);</span><br><span class="line">            var7 = result;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException var11) &#123;</span><br><span class="line">            <span class="comment">//关闭connection</span></span><br><span class="line">            JdbcUtils.closeStatement(stmt);</span><br><span class="line">            stmt = <span class="keyword">null</span>;</span><br><span class="line">            DataSourceUtils.releaseConnection(con, <span class="keyword">this</span>.getDataSource());</span><br><span class="line">            con = <span class="keyword">null</span>;</span><br><span class="line">            <span class="comment">//对SQLException异常进行转换，实现统一异常处理。</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">this</span>.getExceptionTranslator().translate(<span class="string">"StatementCallback"</span>, getSql(action), var11);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            JdbcUtils.closeStatement(stmt);</span><br><span class="line">            DataSourceUtils.releaseConnection(con, <span class="keyword">this</span>.getDataSource());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> var7;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>方法分析：</p>
+<p>上述方法为<a href="http://blog.csdn.net/zhengzhb/article/details/7405608" target="_blank" rel="noopener">模板方法模式</a> 的典型应用。实现了数据库的操作。与一般的<code>模板方法模式</code>不一样的是，JdbcTemplate实现的方式是通过<code>回调(CallBack)</code>。这种实现方法避免了每次使用JdbcTemplate的时候都需要进行子类化。</p>
+<p><i><b><font color="#0099ff" size="2" face="黑体">备注： 在JDK1.8中，使用匿名类的时候，若接口为<a href="http://www.cnblogs.com/chenpi/p/5890144.html" target="_blank" rel="noopener">函数式接口</a>,z则可以转换为使用 <a href="http://www.importnew.com/16436.html" target="_blank" rel="noopener">lambda表达式</a><br></font></b></i></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/08/29/JdbcTemplate学习/" data-id="cjcu8ctfn0014aq0mz2j9dg66" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/09/11/AbstractQueuedSyncchronizer源码学习/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          AbstractQueuedSyncchronizer源码学习
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/08/25/Mysql修改表主键/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">Mysql修改表主键</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dokuwiki部署/">dokuwiki部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java基础集合/">java基础集合</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发/">java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发锁/">java并发锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发集合/">java并发集合</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/部署GitHub-Page/">部署GitHub Page</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 14px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/01/25/hahh/">hahh</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/23/ArrayList源码学习/">ArrayList源码学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/19/java基础集合源码学习之AbstractList学习/">java基础集合源码学习之AbstractList学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/17/java基础集合源码学习之AbstractCollection学习/">java基础集合源码学习之AbstractCollection学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/08/CyclicBarrier源码学习/">CyclicBarrier源码学习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 houlong<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+  <a href="https://github.com/houlong123"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1000;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+</body>
+</html>

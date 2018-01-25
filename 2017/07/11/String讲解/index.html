@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>String讲解 | 而今伊始，命途自闯</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="API文档描述Strings are constant; their values cannot be changed after they are created. String buffers support mutable strings. Because String objects are immutable they can be shared.You’ll see that ever">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="String讲解">
+<meta property="og:url" content="https://houlong123.github.io/2017/07/11/String讲解/index.html">
+<meta property="og:site_name" content="而今伊始，命途自闯">
+<meta property="og:description" content="API文档描述Strings are constant; their values cannot be changed after they are created. String buffers support mutable strings. Because String objects are immutable they can be shared.You’ll see that ever">
+<meta property="og:updated_time" content="2018-01-25T05:48:02.760Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="String讲解">
+<meta name="twitter:description" content="API文档描述Strings are constant; their values cannot be changed after they are created. String buffers support mutable strings. Because String objects are immutable they can be shared.You’ll see that ever">
+  
+    <link rel="alternate" href="/atom.xml" title="而今伊始，命途自闯" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">而今伊始，命途自闯</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://houlong123.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-String讲解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/11/String讲解/" class="article-date">
+  <time datetime="2017-07-11T05:38:02.000Z" itemprop="datePublished">2017-07-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      String讲解
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="API文档描述"><a href="#API文档描述" class="headerlink" title="API文档描述"></a>API文档描述</h4><font color="gray"><i>Strings are constant; their values cannot be changed after they are created. String buffers support mutable strings. Because String objects are immutable they can be shared.<br>You’ll see that every method in the class that appears to modify a String actually creates and returns a brand new String object containing the modification. The original String is left untouched.</i></font>
+
+<h4 id="“-”-重载"><a href="#“-”-重载" class="headerlink" title="“+” 重载"></a>“+” 重载</h4><p>在String中，<code>+</code>被赋予了新的功能。该功能可以实现String字符串的连接。在对String的+操作进行反编译时，可知其内部是如何工作的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//源码</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Concatenation</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">     String mango = <span class="string">"mango"</span>;</span><br><span class="line">     String s = <span class="string">"abc"</span> + mango + <span class="string">"def"</span> + <span class="number">47</span>;</span><br><span class="line">     System.out.println(s);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用<code>javac Concatenation.java</code>命令获取class文件，然后使用<code>javap -c Concatenation</code>命令得到：</p>
+<a id="more"></a>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Concatenation</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Concatenation</span><span class="params">()</span></span>;</span><br><span class="line">    Code:</span><br><span class="line">       <span class="number">0</span>: aload_0</span><br><span class="line">       1: invokespecial #1                  // Method java/lang/Object."&lt;init&gt;":()V</span><br><span class="line">       <span class="number">4</span>: <span class="keyword">return</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(java.lang.String[])</span></span>;</span><br><span class="line">    Code:</span><br><span class="line">       0: ldc           #2                  // String mango</span><br><span class="line">       <span class="number">2</span>: astore_1</span><br><span class="line">       3: new           #3                  // class java/lang/StringBuilder</span><br><span class="line">       <span class="number">6</span>: dup</span><br><span class="line">       7: invokespecial #4                  // Method java/lang/StringBuilder."&lt;init&gt;":()V</span><br><span class="line">      10: ldc           #5                  // String abc</span><br><span class="line">      12: invokevirtual #6                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;</span><br><span class="line">      <span class="number">15</span>: aload_1</span><br><span class="line">      16: invokevirtual #6                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;</span><br><span class="line">      19: ldc           #7                  // String def</span><br><span class="line">      21: invokevirtual #6                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;</span><br><span class="line">      <span class="number">24</span>: bipush        <span class="number">47</span></span><br><span class="line">      26: invokevirtual #8                  // Method java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;</span><br><span class="line">      29: invokevirtual #9                  // Method java/lang/StringBuilder.toString:()Ljava/lang/String;</span><br><span class="line">      <span class="number">32</span>: astore_2</span><br><span class="line">      33: getstatic     #10                 // Field java/lang/System.out:Ljava/io/PrintStream;</span><br><span class="line">      <span class="number">36</span>: aload_2</span><br><span class="line">      37: invokevirtual #11                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V</span><br><span class="line">      <span class="number">40</span>: <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由上可知，编译器创建了<code>StringBuilder</code>对象去构建源码中的字符串s。其实现是调用<code>append()</code>方法实现字符串的连接，最后调用<code>toString()</code>方法生成结果，把它存储作为s。</p>
+<p>简单程序中，可以发现使用<code>+</code>或者 <code>StringBuilder</code> 进行字符串连接时，并没有什么区别，使用哪个都可以。但是在有循环操作时，<code>StringBuilder</code> 比较有优势。看代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WhitherStringBuilder</span> </span>&#123;</span><br><span class="line">  <span class="comment">//循环内，使用+操作进行字符串连接</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">implicit</span><span class="params">(String[] fields)</span> </span>&#123;</span><br><span class="line">    String result = <span class="string">""</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; fields.length; i++)</span><br><span class="line">      result += fields[i];</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//循环内，使用StringBuilder操作进行字符串连接</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">explicit</span><span class="params">(String[] fields)</span> </span>&#123;</span><br><span class="line">    StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; fields.length; i++)</span><br><span class="line">      result.append(fields[i]);</span><br><span class="line">    <span class="keyword">return</span> result.toString();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>反编译</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Concatenation</span><span class="params">()</span></span>;</span><br><span class="line">    Code:</span><br><span class="line">       <span class="number">0</span>: aload_0</span><br><span class="line">       1: invokespecial #1                  // Method java/lang/Object."&lt;init&gt;":()V</span><br><span class="line">       <span class="number">4</span>: <span class="keyword">return</span></span><br><span class="line">   <span class="comment">//使用+操作进行字符串连接</span></span><br><span class="line">  <span class="keyword">public</span> java.lang.<span class="function">String <span class="title">implicit</span><span class="params">(java.lang.String[])</span></span>;</span><br><span class="line">    Code:</span><br><span class="line">       0: ldc           #2                  // String</span><br><span class="line">       <span class="number">2</span>: astore_2</span><br><span class="line">       <span class="number">3</span>: iconst_0</span><br><span class="line">       <span class="number">4</span>: istore_3</span><br><span class="line">       <span class="number">5</span>: iload_3</span><br><span class="line">       <span class="number">6</span>: aload_1</span><br><span class="line">       <span class="number">7</span>: arraylength</span><br><span class="line">       <span class="number">8</span>: if_icmpge     <span class="number">38</span></span><br><span class="line">      11: new           #3                  // class java/lang/StringBuilder</span><br><span class="line">      <span class="number">14</span>: dup</span><br><span class="line">      15: invokespecial #4                  // Method java/lang/StringBuilder."&lt;init&gt;":()V</span><br><span class="line">      <span class="number">18</span>: aload_2</span><br><span class="line">      19: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;</span><br><span class="line">      <span class="number">22</span>: aload_1</span><br><span class="line">      <span class="number">23</span>: iload_3</span><br><span class="line">      <span class="number">24</span>: aaload</span><br><span class="line">      25: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;</span><br><span class="line">      28: invokevirtual #6                  // Method java/lang/StringBuilder.toString:()Ljava/lang/String;</span><br><span class="line">      <span class="number">31</span>: astore_2</span><br><span class="line">      <span class="number">32</span>: iinc          <span class="number">3</span>, <span class="number">1</span></span><br><span class="line">      <span class="number">35</span>: goto          <span class="number">5</span>    <span class="comment">//重点，跳转到5</span></span><br><span class="line">      <span class="number">38</span>: aload_2</span><br><span class="line">      <span class="number">39</span>: areturn</span><br><span class="line"> </span><br><span class="line">  <span class="comment">//使用StringBuilder操作进行字符串连接</span></span><br><span class="line">  <span class="keyword">public</span> java.lang.<span class="function">String <span class="title">explicit</span><span class="params">(java.lang.String[])</span></span>;</span><br><span class="line">    Code:</span><br><span class="line">       0: new           #3                  // class java/lang/StringBuilder</span><br><span class="line">       <span class="number">3</span>: dup</span><br><span class="line">       4: invokespecial #4                  // Method java/lang/StringBuilder."&lt;init&gt;":()V</span><br><span class="line">       <span class="number">7</span>: astore_2</span><br><span class="line">       <span class="number">8</span>: iconst_0</span><br><span class="line">       <span class="number">9</span>: istore_3</span><br><span class="line">      <span class="number">10</span>: iload_3</span><br><span class="line">      <span class="number">11</span>: aload_1</span><br><span class="line">      <span class="number">12</span>: arraylength</span><br><span class="line">      <span class="number">13</span>: if_icmpge     <span class="number">30</span></span><br><span class="line">      <span class="number">16</span>: aload_2</span><br><span class="line">      <span class="number">17</span>: aload_1</span><br><span class="line">      <span class="number">18</span>: iload_3</span><br><span class="line">      <span class="number">19</span>: aaload</span><br><span class="line">      20: invokevirtual #5                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;</span><br><span class="line">      <span class="number">23</span>: pop</span><br><span class="line">      <span class="number">24</span>: iinc          <span class="number">3</span>, <span class="number">1</span></span><br><span class="line">      <span class="number">27</span>: goto          <span class="number">10</span>          <span class="comment">//重点，跳转到第10 步</span></span><br><span class="line">      <span class="number">30</span>: aload_2</span><br><span class="line">      31: invokevirtual #6                  // Method java/lang/StringBuilder.toString:()Ljava/lang/String;</span><br><span class="line">      <span class="number">34</span>: areturn</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在反编译代码中，在<code>implicit()</code>(即使用+操作字符串)方法中，重点注意第  <code>8:</code>和<code>35:</code>。8:表示：如果循环完毕，在执行38:，否则往下执行。35:表示：跳转到循环开始出5:。重点是<code>StringBuilder</code>的创建发生在<code>11:</code>，位于循环之内，因此可知在使用+操作字符串时，会产生许多StringBuilder临时对象，性能不太好。</p>
+<p>在<code>explicit()</code>(即使用StringBuilder操作字符串)方法中，StringBuilder的创建发生在循环之外，性能好些。</p>
+<p>因此得知，在涉及到循环时，建议使用StringBuilder连接字符串。</p>
+<h4 id="switch对字符串支持的实现"><a href="#switch对字符串支持的实现" class="headerlink" title="switch对字符串支持的实现"></a>switch对字符串支持的实现</h4><p>在java 7之前，switch语句的判断条件可以接受<code>int</code>，<code>byte</code>，<code>char</code>，<code>short</code>，不能接受其他类型。但是在Java 7 之后，switch语句可以支持String类型了。<code>switch对String的支持是通过使用equals()方法和hashcode()方法实现的</code></p>
+<p>Java代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">            String str = <span class="string">"world"</span>;</span><br><span class="line">            <span class="keyword">switch</span> (str) &#123;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">"hello"</span>:</span><br><span class="line">                    System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">"world"</span>:</span><br><span class="line">                    System.out.println(<span class="string">"world"</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">default</span>: <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译后代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String str = <span class="string">"world"</span>;</span><br><span class="line">        <span class="keyword">byte</span> var3 = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">switch</span>(str.hashCode()) &#123; <span class="comment">//在switch语句中使用了String的hashCode()方法</span></span><br><span class="line">        <span class="keyword">case</span> <span class="number">99162322</span>:</span><br><span class="line">            <span class="keyword">if</span>(str.equals(<span class="string">"hello"</span>)) &#123;   <span class="comment">//在哈希值相同的情况下，可能会发生哈希碰撞，因此通过使用equals()方法比较进行安全检查，这个检查是必要的</span></span><br><span class="line">                var3 = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">113318802</span>:</span><br><span class="line">            <span class="keyword">if</span>(str.equals(<span class="string">"world"</span>)) &#123;</span><br><span class="line">                var3 = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span>(var3) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">            System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">            System.out.println(<span class="string">"world"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面编译后的代码看，可以知道字符串的switch是通过equals()和hashCode()方法来实现的。switch语句中只能使用整型。使用hashCode()的返回值进行switch语句判断，在哈希值匹配后，由于哈希碰撞，在使用equals()进行精确判断，实现流程控制。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/07/11/String讲解/" data-id="cjcu8ctgf001vaq0mch1rt732" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/07/31/AOP学习之实现机制/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          AOP学习之实现机制
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/07/10/Interceptor讲解/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">Interceptor讲解</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dokuwiki部署/">dokuwiki部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java基础集合/">java基础集合</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发/">java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发锁/">java并发锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发集合/">java并发集合</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/部署GitHub-Page/">部署GitHub Page</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 14px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/01/25/hahh/">hahh</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/23/ArrayList源码学习/">ArrayList源码学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/19/java基础集合源码学习之AbstractList学习/">java基础集合源码学习之AbstractList学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/17/java基础集合源码学习之AbstractCollection学习/">java基础集合源码学习之AbstractCollection学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/08/CyclicBarrier源码学习/">CyclicBarrier源码学习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 houlong<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+  <a href="https://github.com/houlong123"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1000;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+</body>
+</html>

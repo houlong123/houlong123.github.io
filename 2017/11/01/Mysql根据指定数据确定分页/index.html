@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Mysql根据指定数据确定分页 | 而今伊始，命途自闯</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="场景某业务，只知道每页要展示数据大小和指定数据，然后确定指定数据在第几页。 测试表user   id name age update_time create_time     1 hou 32 2017-11-01 12:00:00 2017-11-01 12:00:00   2 hou1 22 2017-11-01 12:00:00 2017-11-11 12:00:00   3 hou2 29">
+<meta name="keywords" content="Mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql根据指定数据确定分页">
+<meta property="og:url" content="https://houlong123.github.io/2017/11/01/Mysql根据指定数据确定分页/index.html">
+<meta property="og:site_name" content="而今伊始，命途自闯">
+<meta property="og:description" content="场景某业务，只知道每页要展示数据大小和指定数据，然后确定指定数据在第几页。 测试表user   id name age update_time create_time     1 hou 32 2017-11-01 12:00:00 2017-11-01 12:00:00   2 hou1 22 2017-11-01 12:00:00 2017-11-11 12:00:00   3 hou2 29">
+<meta property="og:updated_time" content="2018-01-25T06:39:37.214Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql根据指定数据确定分页">
+<meta name="twitter:description" content="场景某业务，只知道每页要展示数据大小和指定数据，然后确定指定数据在第几页。 测试表user   id name age update_time create_time     1 hou 32 2017-11-01 12:00:00 2017-11-01 12:00:00   2 hou1 22 2017-11-01 12:00:00 2017-11-11 12:00:00   3 hou2 29">
+  
+    <link rel="alternate" href="/atom.xml" title="而今伊始，命途自闯" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">而今伊始，命途自闯</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://houlong123.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Mysql根据指定数据确定分页" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/01/Mysql根据指定数据确定分页/" class="article-date">
+  <time datetime="2017-11-01T06:36:46.000Z" itemprop="datePublished">2017-11-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Mysql根据指定数据确定分页
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h6 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h6><p>某业务，只知道<code>每页要展示数据大小和指定数据</code>，然后确定指定数据在第几页。</p>
+<h6 id="测试表user"><a href="#测试表user" class="headerlink" title="测试表user"></a>测试表user</h6><table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>age</th>
+<th>update_time</th>
+<th>create_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>hou</td>
+<td>32</td>
+<td>2017-11-01 12:00:00</td>
+<td>2017-11-01 12:00:00</td>
+</tr>
+<tr>
+<td>2</td>
+<td>hou1</td>
+<td>22</td>
+<td>2017-11-01 12:00:00</td>
+<td>2017-11-11 12:00:00</td>
+</tr>
+<tr>
+<td>3</td>
+<td>hou2</td>
+<td>29</td>
+<td>2017-09-01 12:00:00</td>
+<td>2017-11-01 12:00:00</td>
+</tr>
+<tr>
+<td>4</td>
+<td>hou3</td>
+<td>24</td>
+<td>2017-05-01 12:00:00</td>
+<td>2017-11-02 12:00:00</td>
+</tr>
+<tr>
+<td>5</td>
+<td>hou4</td>
+<td>25</td>
+<td>2017-12-01 12:00:00</td>
+<td>2017-08-01 12:00:00</td>
+</tr>
+<tr>
+<td>6</td>
+<td>hou5</td>
+<td>26</td>
+<td>2017-11-01 04:02:00</td>
+<td>2017-03-01 12:00:00</td>
+</tr>
+<tr>
+<td>7</td>
+<td>hou6</td>
+<td>12</td>
+<td>2017-11-01 12:23:00</td>
+<td>2017-10-01 12:00:00</td>
+</tr>
+<tr>
+<td>8</td>
+<td>hou7</td>
+<td>28</td>
+<td>2017-10-01 12:00:00</td>
+<td>2017-11-01 12:00:00</td>
+</tr>
+</tbody>
+</table>
+<h6 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h6><p>现在只知道每页要显示3条数据，即pageSize = 3。确认 <code>id = 8</code> 的数据在第几页。</p>
+<a id="more"></a>
+<h6 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h6><p>上面的需求，有两个情况。情况一是根据ID从小到大升序查询；情况二是根据表中某些字段进行排序。</p>
+<blockquote>
+<p>情况一解决方案</p>
+</blockquote>
+<ol>
+<li>查询 <code>id &lt;= 8</code> 的记录总数 count</li>
+<li>取模 <code>mod = count % pageSize</code></li>
+<li>取整 <code>multiple = count / pageSize</code></li>
+<li>计算<code>id = 8</code> 的数据在第几页：<code>pageNo = mod == 0 ? multiple : multiple + 1</code></li>
+</ol>
+<hr>
+<blockquote>
+<p>情况二解决方案</p>
+</blockquote>
+<p>因为在查询的时候进行了重排序，所以记录的ID可能会出现错乱现象，因为不能使用 <code>情况一的解决方案</code> 来解决问题。此时需要考虑其他解决方案。</p>
+<p>我们知道，不能使用<code>情况一的解决方案</code>的根源是因为唯一且顺序排序的ID发生了错乱，因为我们的解决方案也是想着能否使用SQL语句使查询出的结果根据某个字段进行顺序排序。由此想到了<code>查询结果的行数</code>，因此可以得到相应解决方案。</p>
+<p><strong>查询结果记录对应的行数sql</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	@rownum :=@rownum + 1 AS rownum,</span><br><span class="line">	user.id AS userId,</span><br><span class="line">	name, age,</span><br><span class="line">	update_time</span><br><span class="line">FROM</span><br><span class="line">	user,</span><br><span class="line">	(SELECT @rownum := 0) t</span><br><span class="line">ORDER BY</span><br><span class="line">	update_time DESC</span><br></pre></td></tr></table></figure>
+<p>查询结果为：</p>
+<table>
+<thead>
+<tr>
+<th>rownum</th>
+<th>userId</th>
+<th>name</th>
+<th>age</th>
+<th>update_time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>5</td>
+<td>hou4</td>
+<td>25</td>
+<td>2017-12-01 12:00:00</td>
+</tr>
+<tr>
+<td>2</td>
+<td>7</td>
+<td>hou6</td>
+<td>12</td>
+<td>2017-11-01 12:23:00</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1</td>
+<td>hou</td>
+<td>32</td>
+<td>2017-11-01 12:00:00 </td>
+</tr>
+<tr>
+<td>4</td>
+<td>2</td>
+<td>hou1</td>
+<td>22</td>
+<td>2017-11-01 12:00:00</td>
+</tr>
+<tr>
+<td>5</td>
+<td>6</td>
+<td>hou5</td>
+<td>26</td>
+<td>2017-11-01 04:02:00</td>
+</tr>
+<tr>
+<td>6</td>
+<td>8</td>
+<td>hou7</td>
+<td>28</td>
+<td>2017-10-01 12:00:00</td>
+</tr>
+<tr>
+<td>7</td>
+<td>3</td>
+<td>hou2</td>
+<td>29</td>
+<td>2017-09-01 12:00:00</td>
+</tr>
+<tr>
+<td>8</td>
+<td>4</td>
+<td>hou3</td>
+<td>24</td>
+<td>2017-05-01 12:00:00 </td>
+</tr>
+</tbody>
+</table>
+<p>有查询的结果表可知，user表中的 <code>id = 8</code> 的数据，在新表中的第六行。即<code>id = 8</code> 的数据前面有5条数据。根据 <code>情况一的解决方案</code> 即可算出分页。</p>
+<ol>
+<li>获取 <code>id = 8</code> 的记录位于结果集中第几行，即rownum。SQL为：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">SELECT rownum form </span><br><span class="line">(</span><br><span class="line">    SELECT</span><br><span class="line">    	@rownum :=@rownum + 1 AS rownum,</span><br><span class="line">    	user.id AS userId,</span><br><span class="line">    	name, age,</span><br><span class="line">    	update_time</span><br><span class="line">    FROM</span><br><span class="line">    	user,</span><br><span class="line">    	(SELECT @rownum := 0) t</span><br><span class="line">    ORDER BY</span><br><span class="line">    	update_time DESC</span><br><span class="line">) A where userId = 8</span><br></pre></td></tr></table></figure>
+<ol>
+<li>取模 <code>mod = rownum % pageSize</code></li>
+<li>取整 <code>multiple = rownum / pageSize</code></li>
+<li>计算<code>id = 8</code> 的数据在第几页：<code>pageNo = mod == 0 ? multiple : multiple + 1</code></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/11/01/Mysql根据指定数据确定分页/" data-id="cjcu8ctfx001eaq0mjm0hfppb" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/11/07/ConcurrentHashMap源码学习/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          ConcurrentHashMap源码学习
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/10/15/java并发学习之StampedLock学习/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">java并发学习之StampedLock学习</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dokuwiki部署/">dokuwiki部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java基础集合/">java基础集合</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发/">java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发锁/">java并发锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发集合/">java并发集合</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/部署GitHub-Page/">部署GitHub Page</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 14px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/01/25/hahh/">hahh</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/23/ArrayList源码学习/">ArrayList源码学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/19/java基础集合源码学习之AbstractList学习/">java基础集合源码学习之AbstractList学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/17/java基础集合源码学习之AbstractCollection学习/">java基础集合源码学习之AbstractCollection学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/08/CyclicBarrier源码学习/">CyclicBarrier源码学习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 houlong<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+  <a href="https://github.com/houlong123"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1000;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+</body>
+</html>

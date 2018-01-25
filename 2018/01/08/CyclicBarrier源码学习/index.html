@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>CyclicBarrier源码学习 | 而今伊始，命途自闯</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言CyclicBarrier的字面意思是：可循环使用（cyclic）的屏障（barrier）。通过它可以实现让一组线程等待至某个状态之后再全部同时执行。 使用">
+<meta name="keywords" content="java并发锁">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CyclicBarrier源码学习">
+<meta property="og:url" content="https://houlong123.github.io/2018/01/08/CyclicBarrier源码学习/index.html">
+<meta property="og:site_name" content="而今伊始，命途自闯">
+<meta property="og:description" content="前言CyclicBarrier的字面意思是：可循环使用（cyclic）的屏障（barrier）。通过它可以实现让一组线程等待至某个状态之后再全部同时执行。 使用">
+<meta property="og:updated_time" content="2018-01-25T07:26:05.676Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CyclicBarrier源码学习">
+<meta name="twitter:description" content="前言CyclicBarrier的字面意思是：可循环使用（cyclic）的屏障（barrier）。通过它可以实现让一组线程等待至某个状态之后再全部同时执行。 使用">
+  
+    <link rel="alternate" href="/atom.xml" title="而今伊始，命途自闯" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">而今伊始，命途自闯</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://houlong123.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-CyclicBarrier源码学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/01/08/CyclicBarrier源码学习/" class="article-date">
+  <time datetime="2018-01-08T07:24:43.000Z" itemprop="datePublished">2018-01-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      CyclicBarrier源码学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>CyclicBarrier的字面意思是：可循环使用（cyclic）的屏障（barrier）。通过它可以实现让一组线程等待至某个状态之后再全部同时执行。</p>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><a id="more"></a>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * CyclicBarrier类使用</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * CyclicBarrier为可循环使用的屏障。让一组线程到达屏障时被阻塞，直到最后一个线程到达屏障时，所有被屏障拦截的线程才会继续运行。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CyclicBarrierTest</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="comment">// CyclicBarrir应用场景</span></span><br><span class="line">    <span class="keyword">private</span> CyclicBarrier cyclicBarrier = <span class="keyword">new</span> CyclicBarrier(<span class="number">4</span>, <span class="keyword">this</span>);</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 保存每个sheet计算出的银流结果</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> ConcurrentHashMap&lt;String, Integer&gt; sheetBankWaterMap = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;(<span class="number">4</span>);</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 假如有4个sheet，启动4个线程</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Executor executor = Executors.newFixedThreadPool(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">count</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">            executor.execute(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    sheetBankWaterMap.put(Thread.currentThread().getName(), <span class="number">1</span>);     <span class="comment">//模拟银流计算结果，并保存</span></span><br><span class="line"></span><br><span class="line">                    <span class="comment">//银流计算完成，插入一个屏障</span></span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        cyclicBarrier.await();</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (BrokenBarrierException e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> sheetCount = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (Map.Entry&lt;String, Integer&gt; entry : sheetBankWaterMap.entrySet()) &#123;</span><br><span class="line">            sheetCount += entry.getValue();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"银流数目："</span> + sheetCount);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        CyclicBarrierTest test = <span class="keyword">new</span> CyclicBarrierTest();</span><br><span class="line">        test.count();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h4><h5 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CyclicBarrier</span><span class="params">(<span class="keyword">int</span> parties)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(parties, <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CyclicBarrier</span><span class="params">(<span class="keyword">int</span> parties, Runnable barrierAction)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (parties &lt;= <span class="number">0</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">    <span class="keyword">this</span>.parties = parties;</span><br><span class="line">    <span class="keyword">this</span>.count = parties;</span><br><span class="line">    <span class="comment">//当给定数量的线程处于等待时，会触发屏障CyclicBarrier，当屏障被触发时执行该命令</span></span><br><span class="line">    <span class="keyword">this</span>.barrierCommand = barrierAction;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从 CyclicBarrier 的源码中，我们可以看到该类有两个构造函数，最终是使用<code>CyclicBarrier(int parties, Runnable barrierAction)</code>。其中的 Runnable 类型的参数是在：<code>当给定数量的线程处于等待时，会触发屏障CyclicBarrier，当屏障被触发时执行该命令</code>。</p>
+<h5 id="await源码"><a href="#await源码" class="headerlink" title="await源码"></a>await源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">await</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException, BrokenBarrierException </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> dowait(<span class="keyword">false</span>, <span class="number">0L</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (TimeoutException toe) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Error(toe); <span class="comment">// cannot happen</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//超时等待await</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">await</span><span class="params">(<span class="keyword">long</span> timeout, TimeUnit unit)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> InterruptedException,</span></span><br><span class="line"><span class="function">           BrokenBarrierException,</span></span><br><span class="line"><span class="function">           TimeoutException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> dowait(<span class="keyword">true</span>, unit.toNanos(timeout));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 CyclicBarrier 中，无论是带有超时的await还是没有带超时的await方法，最终调用的都是 dowait() 方法。</p>
+<h5 id="dowait源码"><a href="#dowait源码" class="headerlink" title="dowait源码"></a>dowait源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">dowait</span><span class="params">(<span class="keyword">boolean</span> timed, <span class="keyword">long</span> nanos)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> InterruptedException, BrokenBarrierException,</span></span><br><span class="line"><span class="function">           TimeoutException </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    <span class="comment">// 1. 获取 ReentrantLock</span></span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> Generation g = generation;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 判断 generation 是否已经 broken</span></span><br><span class="line">        <span class="keyword">if</span> (g.broken)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> BrokenBarrierException();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 判断线程是否中断, 中断后就 breakBarrier</span></span><br><span class="line">        <span class="keyword">if</span> (Thread.interrupted()) &#123;</span><br><span class="line">            breakBarrier();</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> InterruptedException();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//更新已经到达 barrier 的线程数</span></span><br><span class="line">        <span class="keyword">int</span> index = --count;</span><br><span class="line">        <span class="keyword">if</span> (index == <span class="number">0</span>) &#123;  <span class="comment">// tripped   当所有线程到达了 barrier时，触发屏障</span></span><br><span class="line">            <span class="keyword">boolean</span> ranAction = <span class="keyword">false</span>;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">final</span> Runnable command = barrierCommand;</span><br><span class="line">                <span class="keyword">if</span> (command != <span class="keyword">null</span>)    <span class="comment">//最后一个线程到达 barrier, 执行 command</span></span><br><span class="line">                    command.run();</span><br><span class="line">                ranAction = <span class="keyword">true</span>;</span><br><span class="line">                nextGeneration();   <span class="comment">//更新 generation</span></span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (!ranAction)</span><br><span class="line">                    breakBarrier();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// loop until tripped, broken, interrupted, or timed out</span></span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (!timed)</span><br><span class="line">                    trip.await();   <span class="comment">//没有进行 timeout 的 await，其中，在Condition.await()的时候，会释放已持有的锁</span></span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (nanos &gt; <span class="number">0L</span>)</span><br><span class="line">                    nanos = trip.awaitNanos(nanos); <span class="comment">//进行 timeout 方式的等待</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException ie) &#123;</span><br><span class="line">                <span class="keyword">if</span> (g == generation &amp;&amp; ! g.broken) &#123;</span><br><span class="line">                    breakBarrier();</span><br><span class="line">                    <span class="keyword">throw</span> ie;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">// We're about to finish waiting even if we had not</span></span><br><span class="line">                    <span class="comment">// been interrupted, so this interrupt is deemed to</span></span><br><span class="line">                    <span class="comment">// "belong" to subsequent execution.</span></span><br><span class="line">                    Thread.currentThread().interrupt();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (g.broken)</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> BrokenBarrierException();</span><br><span class="line"></span><br><span class="line">            <span class="comment">//所有线程到达 barrier 直接返回</span></span><br><span class="line">            <span class="keyword">if</span> (g != generation)</span><br><span class="line">                <span class="keyword">return</span> index;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (timed &amp;&amp; nanos &lt;= <span class="number">0L</span>) &#123;</span><br><span class="line">                breakBarrier();</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> TimeoutException();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法是 CyclicBarrier 类的核心。逻辑为：</p>
+<ol>
+<li>获取可重入锁。成功获取，执行下一步；获取失败，等待</li>
+<li>判断屏障是否已经<code>broken</code>。是，抛出<code>BrokenBarrierException</code>异常；否则，执行下一步。</li>
+<li>判断当前线程是否被中断。已中断，则调用breakBarrier()方法将屏障<code>broken</code>，然后抛出<code>InterruptedException</code>异常；否则，执行下一步。</li>
+<li>更新已经到达屏障（barrier）的线程数<code>index = --count</code>。</li>
+<li>如果<code>index==0</code>，则说明所以线程都已到达屏障，则执行<code>barrierCommand</code>任务，并更新generation，然后返回，方法结束。</li>
+<li>如果<code>index!=0</code>，则进入for循环。<ol>
+<li>调用Condition类的相关方法将线程进去等待状态</li>
+<li>判断generation的状态及是否等待已超时。</li>
+</ol>
+</li>
+</ol>
+<h5 id="breakBarrier源码"><a href="#breakBarrier源码" class="headerlink" title="breakBarrier源码"></a>breakBarrier源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当某个线程被中断 / 等待超时 则将 broken = true, 并且唤醒所有等待中的线程</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">breakBarrier</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    generation.broken = <span class="keyword">true</span>;</span><br><span class="line">    count = parties;</span><br><span class="line">    trip.signalAll();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="nextGeneration源码"><a href="#nextGeneration源码" class="headerlink" title="nextGeneration源码"></a>nextGeneration源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//生成下一个 generation</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">nextGeneration</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// signal completion of last generation</span></span><br><span class="line">    <span class="comment">// 唤醒所有等待的线程来获取 AQS 的state的值</span></span><br><span class="line">    trip.signalAll();</span><br><span class="line">    <span class="comment">// set up next generation</span></span><br><span class="line">    <span class="comment">// 重新赋值计算器</span></span><br><span class="line">    count = parties;</span><br><span class="line">    <span class="comment">// 重新初始化 generation</span></span><br><span class="line">    generation = <span class="keyword">new</span> Generation();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="isBroken源码"><a href="#isBroken源码" class="headerlink" title="isBroken源码"></a>isBroken源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//判断 barrier 是否 broken = true</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isBroken</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> generation.broken;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法用来判断阻塞的线程是否被中断</p>
+<h5 id="reset源码"><a href="#reset源码" class="headerlink" title="reset源码"></a>reset源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//将屏障重置为初始状态。</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reset</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        breakBarrier();   <span class="comment">// break the current generation</span></span><br><span class="line">        nextGeneration(); <span class="comment">// start a new generation</span></span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="getNumberWaiting源码"><a href="#getNumberWaiting源码" class="headerlink" title="getNumberWaiting源码"></a>getNumberWaiting源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Returns the number of parties currently waiting at the barrier.</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getNumberWaiting</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> parties - count;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法用于获取在屏障处阻塞的线程。</p>
+<h4 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h4><p><a href="https://www.jianshu.com/p/98afdcfdb37c" target="_blank" rel="noopener">CyclicBarrier 源码分析 (基于Java 8)</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2018/01/08/CyclicBarrier源码学习/" data-id="cjcu8ctf3000laq0mwdywd2ln" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/01/17/java基础集合源码学习之AbstractCollection学习/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          java基础集合源码学习之AbstractCollection学习
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/01/04/Semaphore-信号量-源码学习/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">Semaphore(信号量)源码学习</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dokuwiki部署/">dokuwiki部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java基础集合/">java基础集合</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发/">java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发锁/">java并发锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发集合/">java并发集合</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/部署GitHub-Page/">部署GitHub Page</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 14px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/01/25/hahh/">hahh</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/23/ArrayList源码学习/">ArrayList源码学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/19/java基础集合源码学习之AbstractList学习/">java基础集合源码学习之AbstractList学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/17/java基础集合源码学习之AbstractCollection学习/">java基础集合源码学习之AbstractCollection学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/08/CyclicBarrier源码学习/">CyclicBarrier源码学习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 houlong<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+  <a href="https://github.com/houlong123"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1000;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+</body>
+</html>

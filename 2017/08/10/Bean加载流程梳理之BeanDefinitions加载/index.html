@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Bean加载流程梳理之BeanDefinitions加载 | 而今伊始，命途自闯</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="BeanDefinitions加载是发生在容器获取BeanFactory时，具体是在刷新BeanFactory后进行BeanDefinitions的加载。BeanDefinitions成功加载后，可供后续获取bean对象做准备。 Bean加载源码入口Spring的重要特征之一是IOC(Inversion of Control)，即：控制反转。IOC技术促进了松耦合。Spring提供了两种IOC容器">
+<meta name="keywords" content="Spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bean加载流程梳理之BeanDefinitions加载">
+<meta property="og:url" content="https://houlong123.github.io/2017/08/10/Bean加载流程梳理之BeanDefinitions加载/index.html">
+<meta property="og:site_name" content="而今伊始，命途自闯">
+<meta property="og:description" content="BeanDefinitions加载是发生在容器获取BeanFactory时，具体是在刷新BeanFactory后进行BeanDefinitions的加载。BeanDefinitions成功加载后，可供后续获取bean对象做准备。 Bean加载源码入口Spring的重要特征之一是IOC(Inversion of Control)，即：控制反转。IOC技术促进了松耦合。Spring提供了两种IOC容器">
+<meta property="og:image" content="http://thumbsnap.com/i/6lhuqDDO.jpg">
+<meta property="og:image" content="http://thumbsnap.com/i/rg8ryXwX.jpg">
+<meta property="og:updated_time" content="2018-01-25T06:08:01.872Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Bean加载流程梳理之BeanDefinitions加载">
+<meta name="twitter:description" content="BeanDefinitions加载是发生在容器获取BeanFactory时，具体是在刷新BeanFactory后进行BeanDefinitions的加载。BeanDefinitions成功加载后，可供后续获取bean对象做准备。 Bean加载源码入口Spring的重要特征之一是IOC(Inversion of Control)，即：控制反转。IOC技术促进了松耦合。Spring提供了两种IOC容器">
+<meta name="twitter:image" content="http://thumbsnap.com/i/6lhuqDDO.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="而今伊始，命途自闯" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">而今伊始，命途自闯</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://houlong123.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Bean加载流程梳理之BeanDefinitions加载" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/10/Bean加载流程梳理之BeanDefinitions加载/" class="article-date">
+  <time datetime="2017-08-10T05:59:35.000Z" itemprop="datePublished">2017-08-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Bean加载流程梳理之BeanDefinitions加载
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><i><font color="red">BeanDefinitions加载是发生在容器获取BeanFactory时，具体是在刷新BeanFactory后进行BeanDefinitions的加载。BeanDefinitions成功加载后，可供后续获取bean对象做准备。</font></i></p>
+<h4 id="Bean加载源码入口"><a href="#Bean加载源码入口" class="headerlink" title="Bean加载源码入口"></a>Bean加载源码入口</h4><p>Spring的重要特征之一是IOC(Inversion of Control)，即：控制反转。IOC技术促进了松耦合。Spring提供了两种IOC容器类型：BeanFactory和ApplicationContext，在类结构上，ApplicationContext是继承自BeanFactory的。下面讲解ApplicationContext容器。<br>下面有很简单的一段代码可以作为Spring中Bean加载的入口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ApplicationContext context = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"spring.xml"</span>);</span><br><span class="line">context.getBean(<span class="string">"beanName"</span>);</span><br></pre></td></tr></table></figure>
+<p>ClassPathXmlApplicationContext用于加载CLASSPATH下的Spring配置文件。由示例可知，<code>context.getBean(&quot;beanName&quot;);</code>即可获取到Bean的实例，那么必然<code>ApplicationContext context = new ClassPathXmlApplicationContext(&quot;spring.xml&quot;);</code>就已经完成了对所有Bean实例的加载，因此可以通过ClassPathXmlApplicationContext作为Bean加载源码入口。</p>
+<p>类图：</p>
+<a id="more"></a>
+<p><img src="http://thumbsnap.com/i/6lhuqDDO.jpg" alt="ClassPathXmlApplicationContext类继承图"></p>
+<h4 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ClassPathXmlApplicationContext</span><span class="params">(String configLocation)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(<span class="keyword">new</span> String[]&#123;configLocation&#125;, <span class="keyword">true</span>, (ApplicationContext)<span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ClassPathXmlApplicationContext</span><span class="params">(String[] configLocations, <span class="keyword">boolean</span> refresh, ApplicationContext parent)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(parent);</span><br><span class="line">        <span class="keyword">this</span>.setConfigLocations(configLocations);</span><br><span class="line">        <span class="keyword">if</span>(refresh) &#123;</span><br><span class="line">            <span class="keyword">this</span>.refresh();</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第二个构造函数完成的功能：</p>
+<ul>
+<li><p>super(parent)</p>
+<p>  设置一下父级ApplicationContext，这里是null</p>
+</li>
+<li><p>setConfigLocations(configLocations)</p>
+<p>  里面做了两件事情：</p>
+<ul>
+<li>将指定的Spring配置文件的路径存储到本地</li>
+<li>解析Spring配置文件路径中的${PlaceHolder}占位符，替换为系统变量中PlaceHolder对应的Value值，System本身就自带一些系统变量比如class.path、os.name、user.dir等，也可以通过System.setProperty()方法设置自己需要的系统变量</li>
+</ul>
+</li>
+<li><p>refresh()</p>
+<p>  这个就是整个Spring Bean加载的核心，它是ClassPathXmlApplicationContext的父类AbstractApplicationContext的一个方法，用于刷新整个Spring上下文信息，定义了整个Spring上下文加载的流程。</p>
+</li>
+</ul>
+<h4 id="refresh-源码"><a href="#refresh-源码" class="headerlink" title="refresh()源码"></a>refresh()源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">refresh</span><span class="params">()</span> <span class="keyword">throws</span> BeansException, IllegalStateException </span>&#123;</span><br><span class="line">        Object var1 = <span class="keyword">this</span>.startupShutdownMonitor;</span><br><span class="line">        <span class="keyword">synchronized</span>(<span class="keyword">this</span>.startupShutdownMonitor) &#123;</span><br><span class="line">            <span class="comment">//Prepare this context for refreshing</span></span><br><span class="line">            <span class="keyword">this</span>.prepareRefresh();</span><br><span class="line">            </span><br><span class="line">            <span class="comment">//Tell the subclass to refresh the internal bean factory</span></span><br><span class="line">            ConfigurableListableBeanFactory beanFactory = <span class="keyword">this</span>.obtainFreshBeanFactory();</span><br><span class="line">            </span><br><span class="line">            <span class="comment">//Prepare the bean factory for use in this context.</span></span><br><span class="line">            <span class="keyword">this</span>.prepareBeanFactory(beanFactory);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">//Allows post-processing of the bean factory in context subclasses.</span></span><br><span class="line">                <span class="keyword">this</span>.postProcessBeanFactory(beanFactory);</span><br><span class="line">               </span><br><span class="line">                <span class="comment">//Invoke factory processors registered as beans in the context</span></span><br><span class="line">                <span class="keyword">this</span>.invokeBeanFactoryPostProcessors(beanFactory);</span><br><span class="line">               </span><br><span class="line">                <span class="comment">//Register bean processors that intercept bean creatio</span></span><br><span class="line">                <span class="keyword">this</span>.registerBeanPostProcessors(beanFactory);</span><br><span class="line">                </span><br><span class="line">                <span class="comment">//Initialize message source for this context</span></span><br><span class="line">                <span class="keyword">this</span>.initMessageSource();</span><br><span class="line">               </span><br><span class="line">                <span class="comment">//Initialize event multicaster for this context</span></span><br><span class="line">                <span class="keyword">this</span>.initApplicationEventMulticaster();</span><br><span class="line">                </span><br><span class="line">                <span class="comment">//Initialize other special beans in specific context subclasses</span></span><br><span class="line">                <span class="keyword">this</span>.onRefresh();</span><br><span class="line">                </span><br><span class="line">                <span class="comment">//check for listener beans and register them</span></span><br><span class="line">                <span class="keyword">this</span>.registerListeners();</span><br><span class="line">               </span><br><span class="line">                <span class="comment">//Instantiate all remaining (non-lazy-init) singletons</span></span><br><span class="line">                <span class="keyword">this</span>.finishBeanFactoryInitialization(beanFactory);</span><br><span class="line">                </span><br><span class="line">                <span class="comment">//Last step: publish corresponding event</span></span><br><span class="line">                <span class="keyword">this</span>.finishRefresh();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (BeansException var9) &#123;</span><br><span class="line">                <span class="keyword">if</span>(<span class="keyword">this</span>.logger.isWarnEnabled()) &#123;</span><br><span class="line">                    <span class="keyword">this</span>.logger.warn(<span class="string">"Exception encountered during context initialization - cancelling refresh attempt: "</span> + var9);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//Destroy already created singletons to avoid dangling resources</span></span><br><span class="line">                <span class="keyword">this</span>.destroyBeans();</span><br><span class="line">                <span class="comment">//Reset 'active' flag</span></span><br><span class="line">                <span class="keyword">this</span>.cancelRefresh(var9);</span><br><span class="line">                <span class="keyword">throw</span> var9;</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                <span class="keyword">this</span>.resetCommonCaches();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此方法使用了设计模式中的<a href="http://blog.csdn.net/zhengzhb/article/details/7405608" target="_blank" rel="noopener">模板设计模式</a>和<a href="http://blog.csdn.net/zhengzhb/article/details/7609670" target="_blank" rel="noopener">策略设计模式</a>。模板方法中的个别基本方法由相应的子类去具体实现，易于扩展，达到了代码的复用效果。</p>
+<p><i><b><font color="red" size="2" face="黑体">注：refresh()方法和close()方法都使用了startUpShutdownMonitor对象锁加锁，这就保证了在调用refresh()方法的时候无法调用close()方法，反之亦然，避免了冲突</font></b></i></p>
+<h4 id="prepareRefresh源码"><a href="#prepareRefresh源码" class="headerlink" title="prepareRefresh源码"></a>prepareRefresh源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Prepare this context for refreshing, setting its startup date and active flag</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">prepareRefresh</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.startupDate = System.currentTimeMillis();</span><br><span class="line">        <span class="keyword">this</span>.closed.set(<span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">this</span>.active.set(<span class="keyword">true</span>);</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.logger.isInfoEnabled()) &#123;</span><br><span class="line">            <span class="keyword">this</span>.logger.info(<span class="string">"Refreshing "</span> + <span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.initPropertySources();</span><br><span class="line">        <span class="keyword">this</span>.getEnvironment().validateRequiredProperties();</span><br><span class="line">        <span class="keyword">this</span>.earlyApplicationEvents = <span class="keyword">new</span> LinkedHashSet();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>功能：</p>
+<ul>
+<li>设置一下刷新Spring上下文的开始时间</li>
+<li>将active标识位设置为true，closed设置为false</li>
+<li>初始化资源配置并对必要资源进行校验</li>
+</ul>
+<h4 id="obtainFreshBeanFactory源码"><a href="#obtainFreshBeanFactory源码" class="headerlink" title="obtainFreshBeanFactory源码"></a>obtainFreshBeanFactory源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> ConfigurableListableBeanFactory <span class="title">obtainFreshBeanFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.refreshBeanFactory();</span><br><span class="line">        ConfigurableListableBeanFactory beanFactory = <span class="keyword">this</span>.getBeanFactory();</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.logger.isDebugEnabled()) &#123;</span><br><span class="line">            <span class="keyword">this</span>.logger.debug(<span class="string">"Bean factory for "</span> + <span class="keyword">this</span>.getDisplayName() + <span class="string">": "</span> + beanFactory);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> beanFactory;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>功能：</p>
+<ul>
+<li>刷新BeanFactory</li>
+<li>获取类型为ConfigurableListableBeanFactory的beanFactory实例并返回</li>
+</ul>
+<h4 id="refreshBeanFactory源码"><a href="#refreshBeanFactory源码" class="headerlink" title="refreshBeanFactory源码"></a>refreshBeanFactory源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">refreshBeanFactory</span><span class="params">()</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">        <span class="comment">//beanFactory不为空时，销毁所有bean，并将beanFactory置空</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.hasBeanFactory()) &#123;</span><br><span class="line">            <span class="keyword">this</span>.destroyBeans();</span><br><span class="line">            <span class="keyword">this</span>.closeBeanFactory();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//创建DefaultListableBeanFactory类型的bean</span></span><br><span class="line">            DefaultListableBeanFactory ex = <span class="keyword">this</span>.createBeanFactory();</span><br><span class="line">            ex.setSerializationId(<span class="keyword">this</span>.getId());</span><br><span class="line">            <span class="comment">//设置BeanFactory</span></span><br><span class="line">            <span class="keyword">this</span>.customizeBeanFactory(ex);</span><br><span class="line">            <span class="comment">//加载bean的定义</span></span><br><span class="line">            <span class="keyword">this</span>.loadBeanDefinitions(ex);</span><br><span class="line">            Object var2 = <span class="keyword">this</span>.beanFactoryMonitor;</span><br><span class="line">            <span class="keyword">synchronized</span>(<span class="keyword">this</span>.beanFactoryMonitor) &#123;</span><br><span class="line">                <span class="keyword">this</span>.beanFactory = ex;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException var5) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ApplicationContextException(<span class="string">"I/O error parsing bean definition source for "</span> + <span class="keyword">this</span>.getDisplayName(), var5);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>在上述源码中<code>DefaultListableBeanFactory ex = this.createBeanFactory();</code>是代码核心，<code>DefaultListableBeanFactory</code>类是构造bean的核心类，关系继承图如下：</p>
+<p>类图：<br><img src="http://thumbsnap.com/i/rg8ryXwX.jpg" alt="DefaultListableBeanFactory类继承图"></p>
+<h4 id="loadBeanDefinitions源码"><a href="#loadBeanDefinitions源码" class="headerlink" title="loadBeanDefinitions源码"></a>loadBeanDefinitions源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//由类继承关系可知，相应源码在AbstractXmlApplicationContext类</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">loadBeanDefinitions</span><span class="params">(DefaultListableBeanFactory beanFactory)</span> <span class="keyword">throws</span> BeansException, IOException </span>&#123;</span><br><span class="line">        <span class="comment">//获取XmlBeanDefinitionReader对象</span></span><br><span class="line">        XmlBeanDefinitionReader beanDefinitionReader = <span class="keyword">new</span> XmlBeanDefinitionReader(beanFactory);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//XmlBeanDefinitionReader对象相关设置</span></span><br><span class="line">        beanDefinitionReader.setEnvironment(<span class="keyword">this</span>.getEnvironment());</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//由类图可知，AbstractXmlApplicationContext类间接继承了ResourceLoader接口，因此类本身也是一种resourceLoader</span></span><br><span class="line">        beanDefinitionReader.setResourceLoader(<span class="keyword">this</span>);</span><br><span class="line">        beanDefinitionReader.setEntityResolver(<span class="keyword">new</span> ResourceEntityResolver(<span class="keyword">this</span>));</span><br><span class="line">        <span class="keyword">this</span>.initBeanDefinitionReader(beanDefinitionReader);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//bean定义加载，此处为bean加载核心</span></span><br><span class="line">        <span class="keyword">this</span>.loadBeanDefinitions(beanDefinitionReader);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="loadBeanDefinitions源码-1"><a href="#loadBeanDefinitions源码-1" class="headerlink" title="loadBeanDefinitions源码"></a>loadBeanDefinitions源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">loadBeanDefinitions</span><span class="params">(XmlBeanDefinitionReader reader)</span> <span class="keyword">throws</span> BeansException, IOException </span>&#123;</span><br><span class="line">        Resource[] configResources = <span class="keyword">this</span>.getConfigResources();</span><br><span class="line">        <span class="keyword">if</span>(configResources != <span class="keyword">null</span>) &#123;</span><br><span class="line">            reader.loadBeanDefinitions(configResources);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        String[] configLocations = <span class="keyword">this</span>.getConfigLocations();</span><br><span class="line">        <span class="keyword">if</span>(configLocations != <span class="keyword">null</span>) &#123;</span><br><span class="line">            reader.loadBeanDefinitions(configLocations);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>此方法的功能主要就是获取配置资源文件，如果资源不为空，则使<code>XmlBeanDefinitionReader</code>用对象去加载资源文件。</p>
+<h4 id="loadBeanDefinitions-源码"><a href="#loadBeanDefinitions-源码" class="headerlink" title="loadBeanDefinitions 源码"></a>loadBeanDefinitions 源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//经过一系列的处理，程序会执行到loadBeanDefinitions()相应的重载方法。</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">loadBeanDefinitions</span><span class="params">(EncodedResource encodedResource)</span> <span class="keyword">throws</span> BeanDefinitionStoreException </span>&#123;</span><br><span class="line">        Assert.notNull(encodedResource, <span class="string">"EncodedResource must not be null"</span>);</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.logger.isInfoEnabled()) &#123;</span><br><span class="line">            <span class="keyword">this</span>.logger.info(<span class="string">"Loading XML bean definitions from "</span> + encodedResource.getResource());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Object currentResources = (Set)<span class="keyword">this</span>.resourcesCurrentlyBeingLoaded.get();</span><br><span class="line">        <span class="keyword">if</span>(currentResources == <span class="keyword">null</span>) &#123;</span><br><span class="line">            currentResources = <span class="keyword">new</span> HashSet(<span class="number">4</span>);</span><br><span class="line">            <span class="keyword">this</span>.resourcesCurrentlyBeingLoaded.set(currentResources);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!((Set)currentResources).add(encodedResource)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> BeanDefinitionStoreException(<span class="string">"Detected cyclic loading of "</span> + encodedResource + <span class="string">" - check your import definitions!"</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> var5;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">//将bean配置资源文件转换为流</span></span><br><span class="line">                InputStream ex = encodedResource.getResource().getInputStream();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    InputSource inputSource = <span class="keyword">new</span> InputSource(ex);</span><br><span class="line">                    <span class="keyword">if</span>(encodedResource.getEncoding() != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        inputSource.setEncoding(encodedResource.getEncoding());</span><br><span class="line">                    &#125;</span><br><span class="line">            </span><br><span class="line">                    <span class="comment">//加载bean配置文件</span></span><br><span class="line">                    var5 = <span class="keyword">this</span>.doLoadBeanDefinitions(inputSource, encodedResource.getResource());</span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    ex.close();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException var15) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> BeanDefinitionStoreException(<span class="string">"IOException parsing XML document from "</span> + encodedResource.getResource(), var15);</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                ((Set)currentResources).remove(encodedResource);</span><br><span class="line">                <span class="keyword">if</span>(((Set)currentResources).isEmpty()) &#123;</span><br><span class="line">                    <span class="keyword">this</span>.resourcesCurrentlyBeingLoaded.remove();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> var5;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="doRegisterBeanDefinitions源码"><a href="#doRegisterBeanDefinitions源码" class="headerlink" title="doRegisterBeanDefinitions源码"></a>doRegisterBeanDefinitions源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//经过一系列处理，程序执行到doRegisterBeanDefinitions()方法</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doRegisterBeanDefinitions</span><span class="params">(Element root)</span> </span>&#123;</span><br><span class="line">        BeanDefinitionParserDelegate parent = <span class="keyword">this</span>.delegate;</span><br><span class="line">        <span class="keyword">this</span>.delegate = <span class="keyword">this</span>.createDelegate(<span class="keyword">this</span>.getReaderContext(), root, parent);</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.delegate.isDefaultNamespace(root)) &#123;</span><br><span class="line">            String profileSpec = root.getAttribute(<span class="string">"profile"</span>);</span><br><span class="line">            <span class="keyword">if</span>(StringUtils.hasText(profileSpec)) &#123;</span><br><span class="line">                String[] specifiedProfiles = StringUtils.tokenizeToStringArray(profileSpec, <span class="string">",; "</span>);</span><br><span class="line">                <span class="keyword">if</span>(!<span class="keyword">this</span>.getReaderContext().getEnvironment().acceptsProfiles(specifiedProfiles)) &#123;</span><br><span class="line">                    <span class="keyword">if</span>(<span class="keyword">this</span>.logger.isInfoEnabled()) &#123;</span><br><span class="line">                        <span class="keyword">this</span>.logger.info(<span class="string">"Skipped XML bean definition file due to specified profiles ["</span> + profileSpec + <span class="string">"] not matching: "</span> + <span class="keyword">this</span>.getReaderContext().getResource());</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.preProcessXml(root);</span><br><span class="line">        <span class="comment">//解析xml配置文件，加载bean定义的核心代码</span></span><br><span class="line">        <span class="keyword">this</span>.parseBeanDefinitions(root, <span class="keyword">this</span>.delegate);</span><br><span class="line">        <span class="keyword">this</span>.postProcessXml(root);</span><br><span class="line">        <span class="keyword">this</span>.delegate = parent;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="parseBeanDefinitions源码"><a href="#parseBeanDefinitions源码" class="headerlink" title="parseBeanDefinitions源码"></a>parseBeanDefinitions源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">parseBeanDefinitions</span><span class="params">(Element root, BeanDefinitionParserDelegate delegate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(delegate.isDefaultNamespace(root)) &#123;</span><br><span class="line">            NodeList nl = root.getChildNodes();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nl.getLength(); ++i) &#123;</span><br><span class="line">                Node node = nl.item(i);</span><br><span class="line">                <span class="keyword">if</span>(node <span class="keyword">instanceof</span> Element) &#123;</span><br><span class="line">                    Element ele = (Element)node;</span><br><span class="line">                    <span class="keyword">if</span>(delegate.isDefaultNamespace(ele)) &#123;  <span class="comment">//如果是默认的命名空间，则执行，查看源码可知，默认命名空间为"http://www.springframework.org/schema/beans"</span></span><br><span class="line">                        <span class="keyword">this</span>.parseDefaultElement(ele, delegate);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        delegate.parseCustomElement(ele);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            delegate.parseCustomElement(root);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//如果为非默认命名空间时，进行相应解析</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> BeanDefinition <span class="title">parseCustomElement</span><span class="params">(Element ele, BeanDefinition containingBd)</span> </span>&#123;</span><br><span class="line">        String namespaceUri = <span class="keyword">this</span>.getNamespaceURI(ele);</span><br><span class="line">        NamespaceHandler handler = <span class="keyword">this</span>.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);</span><br><span class="line">        <span class="keyword">if</span>(handler == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">this</span>.error(<span class="string">"Unable to locate Spring NamespaceHandler for XML schema namespace ["</span> + namespaceUri + <span class="string">"]"</span>, ele);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> handler.parse(ele, <span class="keyword">new</span> ParserContext(<span class="keyword">this</span>.readerContext, <span class="keyword">this</span>, containingBd));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//如果为默认命名空间时，则进行相应的文件解析</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">parseDefaultElement</span><span class="params">(Element ele, BeanDefinitionParserDelegate delegate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(delegate.nodeNameEquals(ele, <span class="string">"import"</span>)) &#123;</span><br><span class="line">            <span class="keyword">this</span>.importBeanDefinitionResource(ele);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(delegate.nodeNameEquals(ele, <span class="string">"alias"</span>)) &#123;</span><br><span class="line">            <span class="keyword">this</span>.processAliasRegistration(ele);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(delegate.nodeNameEquals(ele, <span class="string">"bean"</span>)) &#123;</span><br><span class="line">            <span class="keyword">this</span>.processBeanDefinition(ele, delegate);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(delegate.nodeNameEquals(ele, <span class="string">"beans"</span>)) &#123;</span><br><span class="line">            <span class="keyword">this</span>.doRegisterBeanDefinitions(ele);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>由源码可知，当为默认命名空间时，将解析xml配置文件中的<code>&lt;import&gt;, &lt;alias&gt;, &lt;bean&gt;, &lt;beans&gt;</code>元素。</p>
+<p>xml配置文件范例:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="attr">xmlns:aop</span>=<span class="string">"http://www.springframework.org/schema/aop"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:mvc</span>=<span class="string">"http://www.springframework.org/schema/mvc"</span> <span class="attr">xmlns:context</span>=<span class="string">"http://www.springframework.org/schema/context"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:task</span>=<span class="string">"http://www.springframework.org/schema/task"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">"</span></span></span><br><span class="line"><span class="tag"><span class="string">     http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">     "</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:annotation-driven</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:aspectj-autoproxy</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">task:executor</span> <span class="attr">id</span>=<span class="string">"taskExecutor"</span> <span class="attr">pool-size</span>=<span class="string">"5-500"</span> <span class="attr">queue-capacity</span>=<span class="string">"1000"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">task:scheduler</span> <span class="attr">id</span>=<span class="string">"taskScheduler"</span> <span class="attr">pool-size</span>=<span class="string">"1000"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">task:annotation-driven</span> <span class="attr">proxy-target-class</span>=<span class="string">"true"</span> <span class="attr">executor</span>=<span class="string">"taskExecutor"</span> <span class="attr">scheduler</span>=<span class="string">"taskScheduler"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"com.xxx.xxx"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">context:exclude-filter</span> <span class="attr">type</span>=<span class="string">"regex"</span> <span class="attr">expression</span>=<span class="string">"com.xxx.xxx.controller"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">context:component-scan</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">import</span> <span class="attr">resource</span>=<span class="string">"classpath:spring-configs/applicationContext-xxx.xml"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"mongoTemplate"</span> <span class="attr">class</span>=<span class="string">"xxx"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/08/10/Bean加载流程梳理之BeanDefinitions加载/" data-id="cjcu8ctej0008aq0m3lo0uljf" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/08/12/Bean加载流程之BeanWrapper构建/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          Bean加载流程之BeanWrapper构建
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/07/31/AOP学习之实现机制/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">AOP学习之实现机制</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dokuwiki部署/">dokuwiki部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java基础集合/">java基础集合</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发/">java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发锁/">java并发锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发集合/">java并发集合</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/部署GitHub-Page/">部署GitHub Page</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 14px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/01/25/hahh/">hahh</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/23/ArrayList源码学习/">ArrayList源码学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/19/java基础集合源码学习之AbstractList学习/">java基础集合源码学习之AbstractList学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/17/java基础集合源码学习之AbstractCollection学习/">java基础集合源码学习之AbstractCollection学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/08/CyclicBarrier源码学习/">CyclicBarrier源码学习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 houlong<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+  <a href="https://github.com/houlong123"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1000;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+</body>
+</html>

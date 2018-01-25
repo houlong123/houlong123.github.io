@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Reentrantlock源码学习 | 而今伊始，命途自闯</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言在上文 AbstractQueuedSyncchronizer学习 中，对AQS进行了相应的学习，知道AQS是Java并发包的一个同步基础机制。该接口有几个常用的子类，本文章主要对其中最常用的子类ReentrantLock类进行学习，其他子类后续再讲。 ReentrantLock源码学习内部数据结构1234567891011121314//可重入独占锁，实现了Lock接口public clas">
+<meta name="keywords" content="java并发锁">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Reentrantlock源码学习">
+<meta property="og:url" content="https://houlong123.github.io/2017/09/25/Reentrantlock源码学习/index.html">
+<meta property="og:site_name" content="而今伊始，命途自闯">
+<meta property="og:description" content="前言在上文 AbstractQueuedSyncchronizer学习 中，对AQS进行了相应的学习，知道AQS是Java并发包的一个同步基础机制。该接口有几个常用的子类，本文章主要对其中最常用的子类ReentrantLock类进行学习，其他子类后续再讲。 ReentrantLock源码学习内部数据结构1234567891011121314//可重入独占锁，实现了Lock接口public clas">
+<meta property="og:updated_time" content="2018-01-25T06:25:16.643Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Reentrantlock源码学习">
+<meta name="twitter:description" content="前言在上文 AbstractQueuedSyncchronizer学习 中，对AQS进行了相应的学习，知道AQS是Java并发包的一个同步基础机制。该接口有几个常用的子类，本文章主要对其中最常用的子类ReentrantLock类进行学习，其他子类后续再讲。 ReentrantLock源码学习内部数据结构1234567891011121314//可重入独占锁，实现了Lock接口public clas">
+  
+    <link rel="alternate" href="/atom.xml" title="而今伊始，命途自闯" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">而今伊始，命途自闯</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://houlong123.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Reentrantlock源码学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/09/25/Reentrantlock源码学习/" class="article-date">
+  <time datetime="2017-09-25T06:22:06.000Z" itemprop="datePublished">2017-09-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Reentrantlock源码学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>在上文 <a href="https://houlong123.github.io/2017/09/11/java%E5%B9%B6%E5%8F%91%E5%AD%A6%E4%B9%A0%E4%B9%8BAbstractQueuedSyncchronizer%E5%AD%A6%E4%B9%A0/">AbstractQueuedSyncchronizer学习</a> 中，对AQS进行了相应的学习，知道AQS是Java并发包的一个同步基础机制。该接口有几个常用的子类，本文章主要对其中最常用的子类<code>ReentrantLock</code>类进行学习，其他子类后续再讲。</p>
+<h4 id="ReentrantLock源码学习"><a href="#ReentrantLock源码学习" class="headerlink" title="ReentrantLock源码学习"></a>ReentrantLock源码学习</h4><h5 id="内部数据结构"><a href="#内部数据结构" class="headerlink" title="内部数据结构"></a>内部数据结构</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//可重入独占锁，实现了Lock接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReentrantLock</span> <span class="keyword">implements</span> <span class="title">Lock</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Sync sync;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//锁的同步控制基础。子类分为公平锁和非公平锁，使用AQS中的state代表持有的锁数</span></span><br><span class="line">    <span class="keyword">abstract</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Sync</span> <span class="keyword">extends</span> <span class="title">AbstractQueuedSynchronizer</span> </span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//非公平锁实现</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">NonfairSync</span> <span class="keyword">extends</span> <span class="title">Sync</span> </span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//公平锁实现</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">FairSync</span> <span class="keyword">extends</span> <span class="title">Sync</span> </span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由类实现可知，该类持有一个<code>Sync</code>对象，提供所有的同步机制。</p>
+<a id="more"></a>
+<h5 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReentrantLock</span> <span class="keyword">implements</span> <span class="title">Lock</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//无参构造函数，默认提供非公平锁机制</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ReentrantLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        sync = <span class="keyword">new</span> NonfairSync();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//有参构造函数，fair = true,提供公平锁机制;fair = false,提供非公平锁机制</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ReentrantLock</span><span class="params">(<span class="keyword">boolean</span> fair)</span> </span>&#123;</span><br><span class="line">        sync = fair ? <span class="keyword">new</span> FairSync() : <span class="keyword">new</span> NonfairSync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>ReentrantLock</code>类有两个构造函数，一个无参构造函数，默认提供一个非公平锁机制；一个boolean类型的构造函数，根据boolea值确实提供何种锁机制。</p>
+<h5 id="获取锁"><a href="#获取锁" class="headerlink" title="获取锁"></a>获取锁</h5><p>对于ReentrantLock，使用过的同学应该都知道，它的通常用法为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    reentrantLock.lock();</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    reentrantLock.unlock();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ReentrantLock会保证 <code>do something</code>在同一时间只有一个线程在执行这段代码。其余线程会被挂起，直到获取锁。由此可知，ReentrantLock实现的就是一个 <strong><code>独占锁</code></strong> 的功能：有且只有一个线程获取到锁，其余线程全部挂起，直到该拥有锁的线程释放锁，被挂起的线程被唤醒重新开始竞争锁。</p>
+<h6 id="lock源码"><a href="#lock源码" class="headerlink" title="lock源码"></a>lock源码</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * Acquires the lock.</span></span><br><span class="line"><span class="comment">  *</span></span><br><span class="line"><span class="comment">  * &lt;p&gt;Acquires the lock if it is not held by another thread and returns</span></span><br><span class="line"><span class="comment">  * immediately, setting the lock hold count to one.</span></span><br><span class="line"><span class="comment">  *</span></span><br><span class="line"><span class="comment">  * &lt;p&gt;If the current thread already holds the lock then the hold</span></span><br><span class="line"><span class="comment">  * count is incremented by one and the method returns immediately.</span></span><br><span class="line"><span class="comment">  *</span></span><br><span class="line"><span class="comment">  * &lt;p&gt;If the lock is held by another thread then the</span></span><br><span class="line"><span class="comment">  * current thread becomes disabled for thread scheduling</span></span><br><span class="line"><span class="comment">  * purposes and lies dormant until the lock has been acquired,</span></span><br><span class="line"><span class="comment">  * at which time the lock hold count is set to one.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    sync.lock();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由方法注释可知，<code>ReentrantLock</code>为可重入锁，内部属性<code>state</code>代表了加锁的次数。由源码可知，ReentrantLock获取锁的具体实现由其内部类<code>Sync</code>的子类提供。内部类<code>Sync</code>的子类有两种：FairSync(公平锁)和NonfairSync(非公平锁)。至于公平锁和非公平锁，唯一的区别是在获取锁的方式。(是直接去获取锁，还是进入队列排队)。下面分析ReentrantLock中公平锁的实现。</p>
+<h6 id="FairSync类中lock源码"><a href="#FairSync类中lock源码" class="headerlink" title="FairSync类中lock源码"></a>FairSync类中lock源码</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//FairSync类中的lock源码</span></span><br><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    acquire(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用到了AQS的acquire方法：</p>
+<h6 id="AQS中acquire源码"><a href="#AQS中acquire源码" class="headerlink" title="AQS中acquire源码"></a>AQS中acquire源码</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AQS中acquire源码</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">acquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!tryAcquire(arg) &amp;&amp;</span><br><span class="line">        acquireQueued(addWaiter(Node.EXCLUSIVE), arg))</span><br><span class="line">        selfInterrupt();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法的具体分析，可以查看 <a href="https://houlong123.github.io/2017/09/11/java%E5%B9%B6%E5%8F%91%E5%AD%A6%E4%B9%A0%E4%B9%8BAbstractQueuedSyncchronizer%E5%AD%A6%E4%B9%A0/">AQS源码学习</a>。可知<code>tryAcquire</code>方法是要由子类去实现的。</p>
+<h6 id="FairSync类中tryAcquire源码"><a href="#FairSync类中tryAcquire源码" class="headerlink" title="FairSync类中tryAcquire源码"></a>FairSync类中tryAcquire源码</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;  <span class="comment">//返回true，表示获取到锁</span></span><br><span class="line">    <span class="keyword">final</span> Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> c = getState();<span class="comment">//获取父类AQS中的标志位</span></span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;  <span class="comment">//说明目前没有持有锁对象，尝试获取锁对象</span></span><br><span class="line">    </span><br><span class="line">        <span class="keyword">if</span> (!hasQueuedPredecessors() &amp;&amp;     <span class="comment">//由于是公平锁内的实现，因此在获取锁之前还需先判断队列中是否有其他已排队的线程</span></span><br><span class="line">                <span class="comment">//如果队列中没有其他线程  说明没有线程正在占有锁！</span></span><br><span class="line">            compareAndSetState(<span class="number">0</span>, acquires)) &#123;      <span class="comment">//修改一下状态位，注意：这里的acquires是在lock的时候传递来的，从上面的图中可以知道，这个值是写死的1</span></span><br><span class="line">            setExclusiveOwnerThread(current);  <span class="comment">//如果通过CAS操作将状态为更新成功则代表当前线程获取锁，因此，将当前线程设置到AQS的一个变量中，说明这个线程拿走了锁。</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">        <span class="comment">//如果不为0 意味着，锁已经被拿走了，但是，因为ReentrantLock是重入锁，</span></span><br><span class="line">        <span class="comment">//是可以重复lock,unlock的，只要成对出现就行。这里还要再判断一次 获取锁的线程是不是当前请求锁的线程。</span></span><br><span class="line">        <span class="keyword">int</span> nextc = c + acquires;</span><br><span class="line">        <span class="keyword">if</span> (nextc &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"Maximum lock count exceeded"</span>);</span><br><span class="line">        setState(nextc);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>功能分析：</p>
+<p>在方法内部首先获取AQS中的标志位<code>state</code>，在前文已提到过，<code>state</code>在AQS类的不同子类中，有不同的意义。ReentrantLock中，表示加锁的次数。如果<code>state == 0</code>，说明还没有线程持有锁，因此会去直接获取锁，由于是公平锁实现，因此在获取锁之前还要先判断队列中是否有其他已排队的线程，如果没有的话，则尝试修改<code>state</code>值，修改成功，表示获取锁成功，返回<code>true</code>；如果<code>state 不为 0</code>，表示已有线程持有了锁，因为 <strong><code>ReentrantLock为可重入锁</code></strong>，因此判断当前线程是否为持有锁的线程，是的话，state值+1，返回<code>true</code>。</p>
+<h6 id="hasQueuedPredecessors源码"><a href="#hasQueuedPredecessors源码" class="headerlink" title="hasQueuedPredecessors源码"></a>hasQueuedPredecessors源码</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//return true if there is a queued thread preceding the</span></span><br><span class="line"><span class="comment">//current thread, and return false if the current thread</span></span><br><span class="line"><span class="comment">//is at the head of the queue or the queue is empty</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">hasQueuedPredecessors</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Node t = tail; </span><br><span class="line">    Node h = head;</span><br><span class="line">    Node s;</span><br><span class="line">    <span class="keyword">return</span> h != t &amp;&amp;</span><br><span class="line">        ((s = h.next) == <span class="keyword">null</span> || s.thread != Thread.currentThread());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至此，ReentrantLock获取锁的公平锁逻辑已分析完，非公平锁逻辑和公平锁逻辑差不多，只是少了排队的逻辑。下面学习一下释放锁的逻辑。</p>
+<h6 id="unlock源码"><a href="#unlock源码" class="headerlink" title="unlock源码"></a>unlock源码</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    sync.release(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>与获取锁的逻辑一样，内部实现同样由<code>Sync</code>内部类提供具体实现。调用到了AQS中的release方法</p>
+<h6 id="AQS中release源码"><a href="#AQS中release源码" class="headerlink" title="AQS中release源码"></a>AQS中release源码</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">release</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tryRelease(arg)) &#123;</span><br><span class="line">        Node h = head;</span><br><span class="line">        <span class="keyword">if</span> (h != <span class="keyword">null</span> &amp;&amp; h.waitStatus != <span class="number">0</span>)</span><br><span class="line">            unparkSuccessor(h);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>tryRelease</code>方法具体逻辑由子类实现。</p>
+<h6 id="Sync类tryRelease源码"><a href="#Sync类tryRelease源码" class="headerlink" title="Sync类tryRelease源码"></a>Sync类tryRelease源码</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> releases)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">int</span> c = getState() - releases;</span><br><span class="line">            <span class="keyword">if</span> (Thread.currentThread() != getExclusiveOwnerThread())    <span class="comment">//如果释放的线程和获取锁的线程不是同一个，抛出非法监视器状态异常。</span></span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalMonitorStateException();</span><br><span class="line">            <span class="keyword">boolean</span> free = <span class="keyword">false</span>;</span><br><span class="line">            <span class="keyword">if</span> (c == <span class="number">0</span>) &#123; <span class="comment">//因为是重入的关系，不是每次释放锁c都等于0，直到最后一次释放锁时，才通知AQS不需要再记录哪个线程正在获取锁。</span></span><br><span class="line">                free = <span class="keyword">true</span>;</span><br><span class="line">                setExclusiveOwnerThread(<span class="keyword">null</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            setState(c);</span><br><span class="line">            <span class="keyword">return</span> free;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>因为是可重入锁，因此在<code>state == 0</code>后，需要通知AQS无需再记录哪个线程正在获取锁。即把当前拥有锁的线程置为空。<strong>无论是公平锁还是非公平锁，释放锁的逻辑都相同</strong>。</p>
+<h4 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h4><p><a href="http://www.infoq.com/cn/articles/jdk1.8-abstractqueuedsynchronizer" target="_blank" rel="noopener">深度解析Java 8：JDK1.8 AbstractQueuedSynchronizer的实现分析（上）</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/09/25/Reentrantlock源码学习/" data-id="cjcu8ctg4001maq0mp7w5tnu1" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/09/26/CountDownLatch源码学习/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          CountDownLatch源码学习
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/09/11/AbstractQueuedSyncchronizer源码学习/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">AbstractQueuedSyncchronizer源码学习</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dokuwiki部署/">dokuwiki部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java基础集合/">java基础集合</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发/">java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发锁/">java并发锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java并发集合/">java并发集合</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/部署GitHub-Page/">部署GitHub Page</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 14px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/01/25/hahh/">hahh</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/23/ArrayList源码学习/">ArrayList源码学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/19/java基础集合源码学习之AbstractList学习/">java基础集合源码学习之AbstractList学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/17/java基础集合源码学习之AbstractCollection学习/">java基础集合源码学习之AbstractCollection学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/08/CyclicBarrier源码学习/">CyclicBarrier源码学习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 houlong<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+  <a href="https://github.com/houlong123"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1000;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+</body>
+</html>
