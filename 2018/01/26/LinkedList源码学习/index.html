@@ -18,7 +18,7 @@
 <meta property="og:image" content="https://farm5.staticflickr.com/4706/26031363388_74213ec72e.jpg">
 <meta property="og:image" content="https://farm5.staticflickr.com/4615/28123993599_9ee81c3faf.jpg">
 <meta property="og:image" content="https://farm5.staticflickr.com/4755/28124193199_db0fc91d86.jpg">
-<meta property="og:updated_time" content="2018-01-26T10:04:09.167Z">
+<meta property="og:updated_time" content="2018-01-26T10:09:08.899Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LinkedList源码学习">
 <meta name="twitter:description" content="前言在上篇文章 ArrayList源码学习 中，我们队 ArrayList 的源码进行了相应的分析。在学习的过程中，我们已经知道，ArrayList的底层是数组结构。所有操作都是针对数组进行的。在本篇中，我们学习一下List接口的另一个重要的子类LinkedList。最后在总结一下二者的区别。 源码解析数据结构12345678910111213141516171819//LinkedList是双链">
@@ -146,12 +146,12 @@
 <p>如果了解链表的相关操作的话，该方法其实很简单。就是将链表的头节点的引用重新指到新节点上；设置好头结点后，如果原头结点为null，说明新节点为链表总的第一次节点，所以链表的尾节点也需要指向新节点；否则，将原头结点的父节点设置为新节点。</p>
 <blockquote>
 <p>元素添加</p>
-<ul>
-<li>队列初始态<br><a data-flickr-embed="true" href="https://www.flickr.com/photos/157389715@N05/28123993599/in/dateposted-public/" title="链表初始态" target="_blank" rel="noopener"><img src="https://farm5.staticflickr.com/4615/28123993599_9ee81c3faf.jpg" width="487" height="302" alt="链表初始态"></a></li>
-</ul>
 </blockquote>
 <ul>
-<li>新元素入队<br><a data-flickr-embed="true" href="https://www.flickr.com/photos/157389715@N05/26031363388/in/dateposted-public/" title="新元素添加" target="_blank" rel="noopener"><img src="https://farm5.staticflickr.com/4706/26031363388_74213ec72e.jpg" width="500" height="233" alt="新元素添加"></a></li>
+<li><p>队列初始态<br><a data-flickr-embed="true" href="https://www.flickr.com/photos/157389715@N05/28123993599/in/dateposted-public/" title="链表初始态" target="_blank" rel="noopener"><img src="https://farm5.staticflickr.com/4615/28123993599_9ee81c3faf.jpg" width="487" height="302" alt="链表初始态"></a></p>
+</li>
+<li><p>新元素入队<br><a data-flickr-embed="true" href="https://www.flickr.com/photos/157389715@N05/26031363388/in/dateposted-public/" title="新元素添加" target="_blank" rel="noopener"><img src="https://farm5.staticflickr.com/4706/26031363388_74213ec72e.jpg" width="500" height="233" alt="新元素添加"></a></p>
+</li>
 </ul>
 <h6 id="addLast源码"><a href="#addLast源码" class="headerlink" title="addLast源码"></a>addLast源码</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addLast</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    linkLast(e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>同  addFirst方法 的逻辑差不多，该方法是在链表的尾节点添加元素。</p>
@@ -260,7 +260,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/26/LinkedList源码学习/" data-id="cjcvrgtms00171r0mlv13u3sd" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/26/LinkedList源码学习/" data-id="cjcvrmi86001c350mua2o677b" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
