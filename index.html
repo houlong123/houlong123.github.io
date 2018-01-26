@@ -61,10 +61,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-hahh" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-LinkedList源码学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/01/25/hahh/" class="article-date">
-  <time datetime="2018-01-25T08:18:22.000Z" itemprop="datePublished">2018-01-25</time>
+    <a href="/2018/01/26/LinkedList源码学习/" class="article-date">
+  <time datetime="2018-01-26T09:56:18.000Z" itemprop="datePublished">2018-01-26</time>
 </a>
     
   </div>
@@ -75,7 +75,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/25/hahh/">hahh</a>
+      <a class="article-title" href="/2018/01/26/LinkedList源码学习/">LinkedList源码学习</a>
     </h1>
   
 
@@ -83,13 +83,24 @@
     
     <div class="article-entry" itemprop="articleBody">
       
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>在上篇文章 <a href="https://houlong123.github.io/2018/01/23/ArrayList源码学习/">ArrayList源码学习</a> 中，我们队 ArrayList 的源码进行了相应的分析。在学习的过程中，我们已经知道，<code>ArrayList的底层是数组结构</code>。所有操作都是针对数组进行的。在本篇中，我们学习一下List接口的另一个重要的子类LinkedList。最后在总结一下二者的区别。</p>
+<h4 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h4><h5 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//LinkedList是双链表结构，继承了List和Deque接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkedList</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">extends</span> <span class="title">AbstractSequentialList</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;, <span class="title">Deque</span>&lt;<span class="title">E</span>&gt;, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//元素个数</span></span><br><span class="line">    <span class="keyword">transient</span> <span class="keyword">int</span> size = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//双链表的头结点。不变性：(first == null &amp;&amp; last == null) || (first.prev == null &amp;&amp; first.item != null)</span></span><br><span class="line">    <span class="keyword">transient</span> Node&lt;E&gt; first;</span><br><span class="line">    <span class="comment">//双链表的尾结点。不变性：(first == null &amp;&amp; last == null) || (last.next == null &amp;&amp; last.item != null)</span></span><br><span class="line">    <span class="keyword">transient</span> Node&lt;E&gt; last;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//迭代器</span></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ListItr</span> <span class="keyword">implements</span> <span class="title">ListIterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//内部节点类</span></span><br><span class="line">    <span class="comment">//列表内部节点类</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">E</span>&gt; </span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从LinkedList的源码中，我们可以发现：LinkedList 不仅继承了List接口，而且还继承了Deque，即：Queue的子类。因此可知，LinkedList不仅可以当做列表使用，而且还能实现队列的功能。</p>
+<p>与<code>ArrayList底层数组结构</code>不同的是，<code>LinkedList的底层数据结构是链接</code>，即由节点构成。底层数据结构的差异自然而然就会导致对存储对象的操作差异。</p>
+<h6 id="Node节点类"><a href="#Node节点类" class="headerlink" title="Node节点类"></a>Node节点类</h6>
+        
+          <p class="article-more-link">
+            <a href="/2018/01/26/LinkedList源码学习/#more">Read More</a>
+          </p>
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/25/hahh/" data-id="cjcu8ctgh001yaq0mtjd4opzh" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/26/LinkedList源码学习/" data-id="cjcvrgtms00171r0mlv13u3sd" class="article-share-link">Teilen</a>
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
+
     </footer>
   </div>
   
@@ -131,7 +142,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/23/ArrayList源码学习/" data-id="cjcu8ctec0004aq0msm1ml0o3" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/23/ArrayList源码学习/" data-id="cjcvrgtlp00041r0msjwig942" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -177,7 +188,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/19/java基础集合源码学习之AbstractList学习/" data-id="cjcu8ctgp0024aq0mqg1eujxj" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/19/java基础集合源码学习之AbstractList学习/" data-id="cjcvrgtno00271r0mepyvgjcl" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -223,7 +234,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/17/java基础集合源码学习之AbstractCollection学习/" data-id="cjcu8ctgm0020aq0mou26tkvf" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/17/java基础集合源码学习之AbstractCollection学习/" data-id="cjcvrgtn6001o1r0mlh4t5r5u" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -267,7 +278,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/08/CyclicBarrier源码学习/" data-id="cjcu8ctf3000laq0mwdywd2ln" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/08/CyclicBarrier源码学习/" data-id="cjcvrgtmd000l1r0mwe79fepj" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -311,7 +322,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/04/Semaphore-信号量-源码学习/" data-id="cjcu8ctg9001oaq0mo3jzcpxc" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/04/Semaphore-信号量-源码学习/" data-id="cjcvrgtn1001m1r0m7xrjm3b4" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -363,7 +374,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/03/Executor框架源码学习/" data-id="cjcu8ctf4000naq0mkyvwyw7o" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/03/Executor框架源码学习/" data-id="cjcvrgtmg000p1r0muj42f5bi" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发/">java并发</a></li></ul>
@@ -413,7 +424,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/12/28/Linux系统dokuwiki部署/" data-id="cjcu8ctfs0019aq0mbc5kiwmw" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/12/28/Linux系统dokuwiki部署/" data-id="cjcvrgtmu00191r0mbsswjav8" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dokuwiki部署/">dokuwiki部署</a></li></ul>
@@ -460,7 +471,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/12/25/Fork-Join框架源码学习之ForkJoinPool学习/" data-id="cjcu8ctfe000uaq0mcqgdvhw1" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/12/25/Fork-Join框架源码学习之ForkJoinPool学习/" data-id="cjcvrgtml000u1r0m70yrfb34" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发/">java并发</a></li></ul>
@@ -505,7 +516,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/12/21/Fork-Join框架源码学习之ForkJoinTask学习/" data-id="cjcu8ctf6000paq0m9xzdm0zu" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/12/21/Fork-Join框架源码学习之ForkJoinTask学习/" data-id="cjcvrgtmo000z1r0myk3wijk4" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发/">java并发</a></li></ul>
@@ -545,7 +556,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 14px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+      <a href="/tags/Mysql/" style="font-size: 11.67px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16.67px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/java基础集合/" style="font-size: 15px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 13.33px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18.33px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
     </div>
   </div>
 
@@ -567,7 +578,7 @@
       <ul>
         
           <li>
-            <a href="/2018/01/25/hahh/">hahh</a>
+            <a href="/2018/01/26/LinkedList源码学习/">LinkedList源码学习</a>
           </li>
         
           <li>
