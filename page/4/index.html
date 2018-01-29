@@ -61,6 +61,51 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Bean加载流程之BeanWrapper构建" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/12/Bean加载流程之BeanWrapper构建/" class="article-date">
+  <time datetime="2017-08-12T06:06:00.000Z" itemprop="datePublished">2017-08-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/12/Bean加载流程之BeanWrapper构建/">Bean加载流程之BeanWrapper构建</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>另一篇 <a href="https://houlong123.github.io/2017/08/10/Bean%E5%8A%A0%E8%BD%BD%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%861/">Bean加载流程梳理之BeanDefinitions加载</a>，分析了Spring上下文加载的代码入口及BeanDefinitions加载流程的梳理。在AbstractApplicationContext的refresh方法中，首先获取了<code>ConfigurableListableBeanFactory</code>类型的beanFactory，然后对beanFactory进行了一系列的设置及其他资源的设置。一切准备就绪后，使用了<code>finishBeanFactoryInitialization</code>方法完成了对于所有非懒加载的Bean的初始化。</p>
+<h4 id="finishBeanFactoryInitialization源码"><a href="#finishBeanFactoryInitialization源码" class="headerlink" title="finishBeanFactoryInitialization源码"></a>finishBeanFactoryInitialization源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">finishBeanFactoryInitialization</span><span class="params">(ConfigurableListableBeanFactory beanFactory)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//设置beanFactory</span></span><br><span class="line">        <span class="keyword">if</span>(beanFactory.containsBean(<span class="string">"conversionService"</span>) &amp;&amp; beanFactory.isTypeMatch(<span class="string">"conversionService"</span>, ConversionService.class)) &#123;</span><br><span class="line">            beanFactory.setConversionService((ConversionService)beanFactory.getBean(<span class="string">"conversionService"</span>, ConversionService.class));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!beanFactory.hasEmbeddedValueResolver()) &#123;</span><br><span class="line">            beanFactory.addEmbeddedValueResolver(<span class="keyword">new</span> StringValueResolver() &#123;</span><br><span class="line">                <span class="function"><span class="keyword">public</span> String <span class="title">resolveStringValue</span><span class="params">(String strVal)</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">return</span> AbstractApplicationContext.<span class="keyword">this</span>.getEnvironment().resolvePlaceholders(strVal);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        String[] weaverAwareNames = beanFactory.getBeanNamesForType(LoadTimeWeaverAware.class, <span class="keyword">false</span>, <span class="keyword">false</span>);</span><br><span class="line">        String[] var3 = weaverAwareNames;</span><br><span class="line">        <span class="keyword">int</span> var4 = weaverAwareNames.length;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> var5 = <span class="number">0</span>; var5 &lt; var4; ++var5) &#123;</span><br><span class="line">            String weaverAwareName = var3[var5];</span><br><span class="line">            <span class="keyword">this</span>.getBean(weaverAwareName);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        beanFactory.setTempClassLoader((ClassLoader)<span class="keyword">null</span>);</span><br><span class="line">        beanFactory.freezeConfiguration();</span><br><span class="line">        <span class="comment">//调用了DefaultListableBeanFactory的preInstantiateSingletons方法</span></span><br><span class="line">        beanFactory.preInstantiateSingletons();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>功能讲解：</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/08/12/Bean加载流程之BeanWrapper构建/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/08/12/Bean加载流程之BeanWrapper构建/" data-id="cjcztfs4x0009d70m5xw29zpc" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Bean加载流程梳理之BeanDefinitions加载" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/08/10/Bean加载流程梳理之BeanDefinitions加载/" class="article-date">
@@ -96,7 +141,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/10/Bean加载流程梳理之BeanDefinitions加载/" data-id="cjcvrmi6y0009350m94ju6wem" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/10/Bean加载流程梳理之BeanDefinitions加载/" data-id="cjcztfs4t0005d70mjifxrj14" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -145,7 +190,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/31/AOP学习之实现机制/" data-id="cjcvrmi640000350m99un7tt3" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/31/AOP学习之实现机制/" data-id="cjcztfs480000d70mqopdw2ee" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -192,7 +237,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/11/String讲解/" data-id="cjcvrmi8v001y350mnqaui4z7" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/11/String讲解/" data-id="cjcztfs6m001xd70m18pxj3rl" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -243,7 +288,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/10/Interceptor讲解/" data-id="cjcvrmi7w0012350mlpqan5cv" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/10/Interceptor讲解/" data-id="cjcztfs5s0016d70mij3y1zwr" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -293,7 +338,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/07/内部类/" data-id="cjcvrmi970028350mu88fdpn2" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/07/内部类/" data-id="cjcztfs78002ed70m2teiw298" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -340,7 +385,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/06/Spring-MVC文件下载/" data-id="cjcvrmi8s001t350mwzr2tnwu" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/06/Spring-MVC文件下载/" data-id="cjcztfs6i001vd70m81m9du9u" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -399,7 +444,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/05/java接口/" data-id="cjcvrmi960026350m1kb18003" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/05/java接口/" data-id="cjcztfs77002bd70mqmu2oggd" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -472,7 +517,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/03/部署GitHub-Page/" data-id="cjcvrmi9c002c350mdrxdl37t" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/03/部署GitHub-Page/" data-id="cjcztfs740029d70mgdobg6n4" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/部署GitHub-Page/">部署GitHub Page</a></li></ul>
@@ -519,7 +564,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/06/30/Hexo使用方法/" data-id="cjcvrmi7t000x350mxr1yfivs" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/06/30/Hexo使用方法/" data-id="cjcztfs5f000td70memxk5e0n" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li></ul>
@@ -581,6 +626,10 @@
       <ul>
         
           <li>
+            <a href="/2018/01/29/Set相关集合源码学习/">Set相关集合源码学习</a>
+          </li>
+        
+          <li>
             <a href="/2018/01/26/LinkedList源码学习/">LinkedList源码学习</a>
           </li>
         
@@ -594,10 +643,6 @@
         
           <li>
             <a href="/2018/01/17/java基础集合源码学习之AbstractCollection学习/">java基础集合源码学习之AbstractCollection学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/08/CyclicBarrier源码学习/">CyclicBarrier源码学习</a>
           </li>
         
       </ul>

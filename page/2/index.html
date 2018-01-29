@@ -61,6 +61,51 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Fork-Join框架源码学习之ForkJoinTask学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/21/Fork-Join框架源码学习之ForkJoinTask学习/" class="article-date">
+  <time datetime="2017-12-21T07:12:04.000Z" itemprop="datePublished">2017-12-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/21/Fork-Join框架源码学习之ForkJoinTask学习/">Fork/Join框架源码学习之ForkJoinTask学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>Fork/Join框架是一个用于并行执行任务的框架，核心是：<font color="red">把一个大任务分割成若干个小任务，最终汇总每个小任务结果后得到大任务结果。</font>体现了<code>分而治之</code>的思想。类似于算法中的<code>归并排序</code>。该框架之所以有更好的并发性能，是因为其充分利用了所有线程的工作能力，避免空闲线程，充分发挥多核并行的处理能力。</p>
+<p><img src="http://www.oracle.com/ocom/groups/public/@otn/documents/digitalasset/422590.png" alt="image"></p>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><h5 id="预备知识点"><a href="#预备知识点" class="headerlink" title="预备知识点"></a>预备知识点</h5><p>在java的官方文档介绍<a href="https://docs.oracle.com/javase/tutorial/essential/concurrency/forkjoin.html" target="_blank" rel="noopener">Fork/Join</a>中，可以知道Fork/Join框架的基本使用的伪代码为：</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/12/21/Fork-Join框架源码学习之ForkJoinTask学习/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/12/21/Fork-Join框架源码学习之ForkJoinTask学习/" data-id="cjcztfs5e000rd70m56jfvhzm" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发/">java并发</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-SynchronousQueue源码解析" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/12/12/SynchronousQueue源码解析/" class="article-date">
@@ -97,7 +142,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/12/12/SynchronousQueue源码解析/" data-id="cjcvrmi910022350m0bq904is" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/12/12/SynchronousQueue源码解析/" data-id="cjcztfs6x0024d70mw9al8bp4" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -144,7 +189,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/30/DelayQueue源码学习/" data-id="cjcvrmi7h000n350m3km4y7xa" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/30/DelayQueue源码学习/" data-id="cjcztfs5a000od70mke4j2ryg" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -191,7 +236,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/29/PriorityBlockingQueue源码学习/" data-id="cjcvrmi8e001j350mle00q6nn" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/29/PriorityBlockingQueue源码学习/" data-id="cjcztfs69001ld70m1hpa3701" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -238,7 +283,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/21/LinkedBlockingQueue源码学习/" data-id="cjcvrmi810017350m0n5d4546" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/21/LinkedBlockingQueue源码学习/" data-id="cjcztfs5y001bd70m4c2zzjv3" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -284,7 +329,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/16/ArrayBlockingQueue源码学习/" data-id="cjcvrmi6j0003350mmdesyim4" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/16/ArrayBlockingQueue源码学习/" data-id="cjcztfs4m0003d70m1va108i4" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -332,7 +377,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/14/CopyOnWriteArrayList源码学习/" data-id="cjcvrmi77000g350m3rbnk04g" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/14/CopyOnWriteArrayList源码学习/" data-id="cjcztfs55000hd70mgnsd8sbd" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -378,7 +423,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/10/ConcurrentLinkedQueue源码学习/" data-id="cjcvrmi74000d350mnaulzmfa" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/10/ConcurrentLinkedQueue源码学习/" data-id="cjcztfs53000fd70m9xalhfn1" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -424,7 +469,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/07/ConcurrentHashMap源码学习/" data-id="cjcvrmi73000b350mhtvshzxr" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/07/ConcurrentHashMap源码学习/" data-id="cjcztfs4v0008d70m6kyf5q5v" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -537,55 +582,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/01/Mysql根据指定数据确定分页/" data-id="cjcvrmi8d001h350me865dfkz" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/01/Mysql根据指定数据确定分页/" data-id="cjcztfs62001dd70m50w0y3cx" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-java并发学习之StampedLock学习" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/10/15/java并发学习之StampedLock学习/" class="article-date">
-  <time datetime="2017-10-15T06:33:39.000Z" itemprop="datePublished">2017-10-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/15/java并发学习之StampedLock学习/">java并发学习之StampedLock学习</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>&nbsp;&nbsp;&nbsp;&nbsp;在 <a href="https://houlong123.github.io/2017/09/28/java并发学习之ReentrantReadWriteLock学习/">ReentrantReadWriteLock源码学习</a> 中，学习了读写锁的源码实现。但是在 <font color="red"><code>读多写少</code></font> 的情况下，使用 ReentrantReadWriteLock 可能会使写入线程遭遇饥饿（Starvation）问题，也就是写入线程迟迟无法竞争到锁而一直处于等待状态。<code>StampedLock锁是对ReentrantReadWriteLock锁的一种改进，即StampedLock是一种改进的读写锁</code>。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp; StampedLock锁有三种模式：写，读，乐观读。StampedLock锁的<code>状态是由版本和模式两个部分组成</code>，锁获取方法返回一个数字作为票据stamp，它用相应的锁状态表示并控制访问。</p>
-<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4>
-        
-          <p class="article-more-link">
-            <a href="/2017/10/15/java并发学习之StampedLock学习/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/10/15/java并发学习之StampedLock学习/" data-id="cjcvrmi99002a350m39dcjqvz" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
 
     </footer>
   </div>
@@ -644,6 +644,10 @@
       <ul>
         
           <li>
+            <a href="/2018/01/29/Set相关集合源码学习/">Set相关集合源码学习</a>
+          </li>
+        
+          <li>
             <a href="/2018/01/26/LinkedList源码学习/">LinkedList源码学习</a>
           </li>
         
@@ -657,10 +661,6 @@
         
           <li>
             <a href="/2018/01/17/java基础集合源码学习之AbstractCollection学习/">java基础集合源码学习之AbstractCollection学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/08/CyclicBarrier源码学习/">CyclicBarrier源码学习</a>
           </li>
         
       </ul>

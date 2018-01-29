@@ -61,6 +61,51 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-java并发学习之StampedLock学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/15/java并发学习之StampedLock学习/" class="article-date">
+  <time datetime="2017-10-15T06:33:39.000Z" itemprop="datePublished">2017-10-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/15/java并发学习之StampedLock学习/">java并发学习之StampedLock学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>&nbsp;&nbsp;&nbsp;&nbsp;在 <a href="https://houlong123.github.io/2017/09/28/java并发学习之ReentrantReadWriteLock学习/">ReentrantReadWriteLock源码学习</a> 中，学习了读写锁的源码实现。但是在 <font color="red"><code>读多写少</code></font> 的情况下，使用 ReentrantReadWriteLock 可能会使写入线程遭遇饥饿（Starvation）问题，也就是写入线程迟迟无法竞争到锁而一直处于等待状态。<code>StampedLock锁是对ReentrantReadWriteLock锁的一种改进，即StampedLock是一种改进的读写锁</code>。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; StampedLock锁有三种模式：写，读，乐观读。StampedLock锁的<code>状态是由版本和模式两个部分组成</code>，锁获取方法返回一个数字作为票据stamp，它用相应的锁状态表示并控制访问。</p>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4>
+        
+          <p class="article-more-link">
+            <a href="/2017/10/15/java并发学习之StampedLock学习/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/10/15/java并发学习之StampedLock学习/" data-id="cjcztfs79002gd70mim85b8zo" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-ReentrantReadWriteLock源码学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/09/28/ReentrantReadWriteLock源码学习/" class="article-date">
@@ -93,7 +138,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/09/28/ReentrantReadWriteLock源码学习/" data-id="cjcvrmi8g001m350mx0ohdavy" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/09/28/ReentrantReadWriteLock源码学习/" data-id="cjcztfs6d001qd70m1ikswkjx" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -136,7 +181,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/09/26/CountDownLatch源码学习/" data-id="cjcvrmi7d000i350mighxre6l" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/09/26/CountDownLatch源码学习/" data-id="cjcztfs56000kd70mgjqtjvby" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -181,7 +226,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/09/25/Reentrantlock源码学习/" data-id="cjcvrmi8j001o350meyr16cg8" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/09/25/Reentrantlock源码学习/" data-id="cjcztfs6g001sd70m7j46yont" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -229,7 +274,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/09/11/AbstractQueuedSyncchronizer源码学习/" data-id="cjcvrmi6a0001350mqggbkdh1" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/09/11/AbstractQueuedSyncchronizer源码学习/" data-id="cjcztfs4o0004d70m7pi9nal5" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -283,7 +328,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/29/JdbcTemplate学习/" data-id="cjcvrmi7y0014350myxg4qzcj" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/29/JdbcTemplate学习/" data-id="cjcztfs5h000wd70mtyags2sv" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -323,7 +368,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/25/Mysql修改表主键/" data-id="cjcvrmi88001e350m37zw7zgp" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/25/Mysql修改表主键/" data-id="cjcztfs5u0018d70mpgt42hun" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li></ul>
@@ -376,7 +421,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/22/Spring-AOP源码学习/" data-id="cjcvrmi8u001v350mu30p6sd2" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/22/Spring-AOP源码学习/" data-id="cjcztfs6u0020d70muhqxv7iq" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -421,7 +466,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/19/IO学习/" data-id="cjcvrmi7u000z350mfw6e22qs" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/19/IO学习/" data-id="cjcztfs5m0011d70m1sshk94x" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -472,52 +517,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/18/Bean加载流程之配置文件占位符替换/" data-id="cjcvrmi6w0008350mpd3xls63" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Bean加载流程之BeanWrapper构建" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/08/12/Bean加载流程之BeanWrapper构建/" class="article-date">
-  <time datetime="2017-08-12T06:06:00.000Z" itemprop="datePublished">2017-08-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/12/Bean加载流程之BeanWrapper构建/">Bean加载流程之BeanWrapper构建</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>另一篇 <a href="https://houlong123.github.io/2017/08/10/Bean%E5%8A%A0%E8%BD%BD%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%861/">Bean加载流程梳理之BeanDefinitions加载</a>，分析了Spring上下文加载的代码入口及BeanDefinitions加载流程的梳理。在AbstractApplicationContext的refresh方法中，首先获取了<code>ConfigurableListableBeanFactory</code>类型的beanFactory，然后对beanFactory进行了一系列的设置及其他资源的设置。一切准备就绪后，使用了<code>finishBeanFactoryInitialization</code>方法完成了对于所有非懒加载的Bean的初始化。</p>
-<h4 id="finishBeanFactoryInitialization源码"><a href="#finishBeanFactoryInitialization源码" class="headerlink" title="finishBeanFactoryInitialization源码"></a>finishBeanFactoryInitialization源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">finishBeanFactoryInitialization</span><span class="params">(ConfigurableListableBeanFactory beanFactory)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//设置beanFactory</span></span><br><span class="line">        <span class="keyword">if</span>(beanFactory.containsBean(<span class="string">"conversionService"</span>) &amp;&amp; beanFactory.isTypeMatch(<span class="string">"conversionService"</span>, ConversionService.class)) &#123;</span><br><span class="line">            beanFactory.setConversionService((ConversionService)beanFactory.getBean(<span class="string">"conversionService"</span>, ConversionService.class));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!beanFactory.hasEmbeddedValueResolver()) &#123;</span><br><span class="line">            beanFactory.addEmbeddedValueResolver(<span class="keyword">new</span> StringValueResolver() &#123;</span><br><span class="line">                <span class="function"><span class="keyword">public</span> String <span class="title">resolveStringValue</span><span class="params">(String strVal)</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">return</span> AbstractApplicationContext.<span class="keyword">this</span>.getEnvironment().resolvePlaceholders(strVal);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        String[] weaverAwareNames = beanFactory.getBeanNamesForType(LoadTimeWeaverAware.class, <span class="keyword">false</span>, <span class="keyword">false</span>);</span><br><span class="line">        String[] var3 = weaverAwareNames;</span><br><span class="line">        <span class="keyword">int</span> var4 = weaverAwareNames.length;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> var5 = <span class="number">0</span>; var5 &lt; var4; ++var5) &#123;</span><br><span class="line">            String weaverAwareName = var3[var5];</span><br><span class="line">            <span class="keyword">this</span>.getBean(weaverAwareName);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        beanFactory.setTempClassLoader((ClassLoader)<span class="keyword">null</span>);</span><br><span class="line">        beanFactory.freezeConfiguration();</span><br><span class="line">        <span class="comment">//调用了DefaultListableBeanFactory的preInstantiateSingletons方法</span></span><br><span class="line">        beanFactory.preInstantiateSingletons();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>功能讲解：</p>
-        
-          <p class="article-more-link">
-            <a href="/2017/08/12/Bean加载流程之BeanWrapper构建/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/12/Bean加载流程之BeanWrapper构建/" data-id="cjcvrmi6s0005350ma0wwuo0f" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/18/Bean加载流程之配置文件占位符替换/" data-id="cjcztfs50000bd70mnwf5hdb7" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -579,6 +579,10 @@
       <ul>
         
           <li>
+            <a href="/2018/01/29/Set相关集合源码学习/">Set相关集合源码学习</a>
+          </li>
+        
+          <li>
             <a href="/2018/01/26/LinkedList源码学习/">LinkedList源码学习</a>
           </li>
         
@@ -592,10 +596,6 @@
         
           <li>
             <a href="/2018/01/17/java基础集合源码学习之AbstractCollection学习/">java基础集合源码学习之AbstractCollection学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/08/CyclicBarrier源码学习/">CyclicBarrier源码学习</a>
           </li>
         
       </ul>
