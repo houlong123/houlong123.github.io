@@ -7,18 +7,18 @@
   
   <title>Set相关集合源码学习 | 而今伊始，命途自闯</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言在前面几个章节中，已经对集合中的 List列表一支进行了相关的学习。在我们日常编程中，使用最多的集合还有 Set 。本章我们将学习Set的相关知识。 java基础集合框架 HashSet源码学习在上图中，我们可以看到，Collection接口 的另一分支：Set 集合，常用的有：HashSet，TreeSet等。在此，我们先学习一下平时最常用的 HashSet。 数据结构">
+  <meta name="description" content="前言在前面几个章节中，已经对集合中的 List列表一支进行了相关的学习。在我们日常编程中，使用最多的集合还有 Set 。本章我们将学习Set的相关知识。 123456graph TDA[Christmas] --&amp;gt;|Get money| B(Go shopping)B --&amp;gt; C&amp;#123;Let me think&amp;#125;C --&amp;gt;|One| D[Laptop]C --&amp;gt">
 <meta name="keywords" content="java基础集合">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Set相关集合源码学习">
 <meta property="og:url" content="https://houlong123.github.io/2018/01/29/Set相关集合源码学习/index.html">
 <meta property="og:site_name" content="而今伊始，命途自闯">
-<meta property="og:description" content="前言在前面几个章节中，已经对集合中的 List列表一支进行了相关的学习。在我们日常编程中，使用最多的集合还有 Set 。本章我们将学习Set的相关知识。 java基础集合框架 HashSet源码学习在上图中，我们可以看到，Collection接口 的另一分支：Set 集合，常用的有：HashSet，TreeSet等。在此，我们先学习一下平时最常用的 HashSet。 数据结构">
+<meta property="og:description" content="前言在前面几个章节中，已经对集合中的 List列表一支进行了相关的学习。在我们日常编程中，使用最多的集合还有 Set 。本章我们将学习Set的相关知识。 123456graph TDA[Christmas] --&amp;gt;|Get money| B(Go shopping)B --&amp;gt; C&amp;#123;Let me think&amp;#125;C --&amp;gt;|One| D[Laptop]C --&amp;gt">
 <meta property="og:image" content="http://img.blog.csdn.net/20140628144205625">
-<meta property="og:updated_time" content="2018-01-29T06:10:43.728Z">
+<meta property="og:updated_time" content="2018-01-29T10:00:40.567Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Set相关集合源码学习">
-<meta name="twitter:description" content="前言在前面几个章节中，已经对集合中的 List列表一支进行了相关的学习。在我们日常编程中，使用最多的集合还有 Set 。本章我们将学习Set的相关知识。 java基础集合框架 HashSet源码学习在上图中，我们可以看到，Collection接口 的另一分支：Set 集合，常用的有：HashSet，TreeSet等。在此，我们先学习一下平时最常用的 HashSet。 数据结构">
+<meta name="twitter:description" content="前言在前面几个章节中，已经对集合中的 List列表一支进行了相关的学习。在我们日常编程中，使用最多的集合还有 Set 。本章我们将学习Set的相关知识。 123456graph TDA[Christmas] --&amp;gt;|Get money| B(Go shopping)B --&amp;gt; C&amp;#123;Let me think&amp;#125;C --&amp;gt;|One| D[Laptop]C --&amp;gt">
 <meta name="twitter:image" content="http://img.blog.csdn.net/20140628144205625">
   
     <link rel="alternate" href="/atom.xml" title="而今伊始，命途自闯" type="application/atom+xml">
@@ -89,6 +89,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在前面几个章节中，已经对集合中的 <code>List</code>列表一支进行了相关的学习。在我们日常编程中，使用最多的集合还有 <code>Set</code> 。本章我们将学习Set的相关知识。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">A[Christmas] --&gt;|Get money| B(Go shopping)</span><br><span class="line">B --&gt; C&#123;Let me think&#125;</span><br><span class="line">C --&gt;|One| D[Laptop]</span><br><span class="line">C --&gt;|Two| E[iPhone]</span><br><span class="line">C --&gt;|Three| F[Car]</span><br></pre></td></tr></table></figure>
 <h4 id="java基础集合框架"><a href="#java基础集合框架" class="headerlink" title="java基础集合框架"></a>java基础集合框架</h4><p><a data-flickr-embed="true" href="http://img.blog.csdn.net/20140628144205625" title="java基础集合框架" target="_blank" rel="noopener"><img src="http://img.blog.csdn.net/20140628144205625" width="640" height="453" alt="java基础集合框架"></a></p>
 <h4 id="HashSet源码学习"><a href="#HashSet源码学习" class="headerlink" title="HashSet源码学习"></a>HashSet源码学习</h4><p>在上图中，我们可以看到，<code>Collection接口</code> 的另一分支：<code>Set</code> 集合，常用的有：HashSet，TreeSet等。在此，我们先学习一下平时最常用的 HashSet。</p>
 <h5 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h5><a id="more"></a>
@@ -109,7 +110,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/29/Set相关集合源码学习/" data-id="cjcztfs67001id70md8brajeo" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/29/Set相关集合源码学习/" data-id="cjd1hi9r9001w4o0moh5hme5c" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -119,6 +120,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2018/01/30/AbstractMap源码学习/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          AbstractMap源码学习
+        
+      </div>
+    </a>
   
   
     <a href="/2018/01/26/LinkedList源码学习/" id="article-nav-older" class="article-nav-link-wrap">
@@ -152,7 +162,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Mysql/" style="font-size: 11.67px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16.67px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/java基础集合/" style="font-size: 15px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 13.33px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18.33px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 16px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
     </div>
   </div>
 
@@ -174,6 +184,10 @@
       <ul>
         
           <li>
+            <a href="/2018/01/30/AbstractMap源码学习/">AbstractMap源码学习</a>
+          </li>
+        
+          <li>
             <a href="/2018/01/29/Set相关集合源码学习/">Set相关集合源码学习</a>
           </li>
         
@@ -187,10 +201,6 @@
         
           <li>
             <a href="/2018/01/19/java基础集合源码学习之AbstractList学习/">java基础集合源码学习之AbstractList学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/17/java基础集合源码学习之AbstractCollection学习/">java基础集合源码学习之AbstractCollection学习</a>
           </li>
         
       </ul>

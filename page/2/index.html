@@ -61,6 +61,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Fork-Join框架源码学习之ForkJoinPool学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/25/Fork-Join框架源码学习之ForkJoinPool学习/" class="article-date">
+  <time datetime="2017-12-25T07:14:29.000Z" itemprop="datePublished">2017-12-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/25/Fork-Join框架源码学习之ForkJoinPool学习/">Fork/Join框架源码学习之ForkJoinPool学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>&nbsp;&nbsp;&nbsp;&nbsp;在 <a href="https://houlong123.github.io/2017/12/21/Fork-Join框架源码学习之ForkJoinTask学习/">Fork/Join框架源码学习之ForkJoinTask学习</a> 文章中，我们已经初步分析了Fork/Join框架中的一个重要类 <a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ForkJoinTask.html" target="_blank" rel="noopener">ForkJoinTask类</a>。在本篇文章中，我们分析一下Fork/Join框架中的另一个重要类：<a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html" target="_blank" rel="noopener">ForkJoinPool</a>。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;在<code>ForkJoinPool</code>的介绍中有说：<code>ForkJoinPool是一种用于运行ForkJoinTasks的ExecutorService</code>（An ExecutorService for running ForkJoinTasks）。即<code>ForkJoinPool</code>也是一种<code>ExecutorService</code>。但由于<font color="red">工作窃取(work-stealing)</font>的缘故，该类与其他<code>ExecutorService</code>又不太一样。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;创建<code>ForkJoinPool</code>对象的方式有多种，在后面的分析中，可以看到该类有多个重载的构造函数。但是在官方文档中，比较推荐使用静态方法 <code>commonPool()</code> 创建<code>ForkJoinPool</code>对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">官方文档描述：</span><br><span class="line"></span><br><span class="line">A static commonPool() is available and appropriate for most applications. </span><br><span class="line">The common pool is used by any ForkJoinTask that is not explicitly </span><br><span class="line">submitted to a specified pool. Using the common pool normally reduces resource </span><br><span class="line">usage (its threads are slowly reclaimed during periods of non-use, and reinstated upon subsequent use).</span><br></pre></td></tr></table></figure>
+<h4 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h4>
+        
+          <p class="article-more-link">
+            <a href="/2017/12/25/Fork-Join框架源码学习之ForkJoinPool学习/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/12/25/Fork-Join框架源码学习之ForkJoinPool学习/" data-id="cjd1hi9qb000x4o0mncsirym4" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发/">java并发</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Fork-Join框架源码学习之ForkJoinTask学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/12/21/Fork-Join框架源码学习之ForkJoinTask学习/" class="article-date">
@@ -94,7 +141,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/12/21/Fork-Join框架源码学习之ForkJoinTask学习/" data-id="cjcztfs5e000rd70m56jfvhzm" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/12/21/Fork-Join框架源码学习之ForkJoinTask学习/" data-id="cjd1hi9q8000u4o0mnhb0tb5f" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发/">java并发</a></li></ul>
@@ -142,7 +189,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/12/12/SynchronousQueue源码解析/" data-id="cjcztfs6x0024d70mw9al8bp4" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/12/12/SynchronousQueue源码解析/" data-id="cjd1hi9rn00254o0mz1oqko58" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -189,7 +236,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/30/DelayQueue源码学习/" data-id="cjcztfs5a000od70mke4j2ryg" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/30/DelayQueue源码学习/" data-id="cjd1hi9q2000p4o0m8nvf7v5e" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -236,7 +283,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/29/PriorityBlockingQueue源码学习/" data-id="cjcztfs69001ld70m1hpa3701" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/29/PriorityBlockingQueue源码学习/" data-id="cjd1hi9qy001m4o0ma79se339" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -283,7 +330,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/21/LinkedBlockingQueue源码学习/" data-id="cjcztfs5y001bd70m4c2zzjv3" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/21/LinkedBlockingQueue源码学习/" data-id="cjd1hi9qk00194o0mkbdnh5pz" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -329,7 +376,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/16/ArrayBlockingQueue源码学习/" data-id="cjcztfs4m0003d70m1va108i4" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/16/ArrayBlockingQueue源码学习/" data-id="cjd1hi9pg00044o0mfe8dwvij" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -377,7 +424,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/14/CopyOnWriteArrayList源码学习/" data-id="cjcztfs55000hd70mgnsd8sbd" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/14/CopyOnWriteArrayList源码学习/" data-id="cjd1hi9pv000i4o0m7gynnlc4" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -423,7 +470,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/10/ConcurrentLinkedQueue源码学习/" data-id="cjcztfs53000fd70m9xalhfn1" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/10/ConcurrentLinkedQueue源码学习/" data-id="cjd1hi9pt000e4o0mdkwfnwia" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -469,123 +516,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/07/ConcurrentHashMap源码学习/" data-id="cjcztfs4v0008d70m6kyf5q5v" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/07/ConcurrentHashMap源码学习/" data-id="cjd1hi9pu000g4o0m1n15n8yt" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Mysql根据指定数据确定分页" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/01/Mysql根据指定数据确定分页/" class="article-date">
-  <time datetime="2017-11-01T06:36:46.000Z" itemprop="datePublished">2017-11-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/01/Mysql根据指定数据确定分页/">Mysql根据指定数据确定分页</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h6 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h6><p>某业务，只知道<code>每页要展示数据大小和指定数据</code>，然后确定指定数据在第几页。</p>
-<h6 id="测试表user"><a href="#测试表user" class="headerlink" title="测试表user"></a>测试表user</h6><table>
-<thead>
-<tr>
-<th>id</th>
-<th>name</th>
-<th>age</th>
-<th>update_time</th>
-<th>create_time</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>hou</td>
-<td>32</td>
-<td>2017-11-01 12:00:00</td>
-<td>2017-11-01 12:00:00</td>
-</tr>
-<tr>
-<td>2</td>
-<td>hou1</td>
-<td>22</td>
-<td>2017-11-01 12:00:00</td>
-<td>2017-11-11 12:00:00</td>
-</tr>
-<tr>
-<td>3</td>
-<td>hou2</td>
-<td>29</td>
-<td>2017-09-01 12:00:00</td>
-<td>2017-11-01 12:00:00</td>
-</tr>
-<tr>
-<td>4</td>
-<td>hou3</td>
-<td>24</td>
-<td>2017-05-01 12:00:00</td>
-<td>2017-11-02 12:00:00</td>
-</tr>
-<tr>
-<td>5</td>
-<td>hou4</td>
-<td>25</td>
-<td>2017-12-01 12:00:00</td>
-<td>2017-08-01 12:00:00</td>
-</tr>
-<tr>
-<td>6</td>
-<td>hou5</td>
-<td>26</td>
-<td>2017-11-01 04:02:00</td>
-<td>2017-03-01 12:00:00</td>
-</tr>
-<tr>
-<td>7</td>
-<td>hou6</td>
-<td>12</td>
-<td>2017-11-01 12:23:00</td>
-<td>2017-10-01 12:00:00</td>
-</tr>
-<tr>
-<td>8</td>
-<td>hou7</td>
-<td>28</td>
-<td>2017-10-01 12:00:00</td>
-<td>2017-11-01 12:00:00</td>
-</tr>
-</tbody>
-</table>
-<h6 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h6><p>现在只知道每页要显示3条数据，即pageSize = 3。确认 <code>id = 8</code> 的数据在第几页。</p>
-        
-          <p class="article-more-link">
-            <a href="/2017/11/01/Mysql根据指定数据确定分页/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/01/Mysql根据指定数据确定分页/" data-id="cjcztfs62001dd70m50w0y3cx" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li></ul>
 
     </footer>
   </div>
@@ -598,7 +532,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/">&laquo; zurück</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">weiter &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; zurück</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/">weiter &raquo;</a>
   </nav>
 
 </section>
@@ -622,7 +556,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Mysql/" style="font-size: 11.67px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16.67px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/java基础集合/" style="font-size: 15px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 13.33px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18.33px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 16px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
     </div>
   </div>
 
@@ -644,6 +578,10 @@
       <ul>
         
           <li>
+            <a href="/2018/01/30/AbstractMap源码学习/">AbstractMap源码学习</a>
+          </li>
+        
+          <li>
             <a href="/2018/01/29/Set相关集合源码学习/">Set相关集合源码学习</a>
           </li>
         
@@ -657,10 +595,6 @@
         
           <li>
             <a href="/2018/01/19/java基础集合源码学习之AbstractList学习/">java基础集合源码学习之AbstractList学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/17/java基础集合源码学习之AbstractCollection学习/">java基础集合源码学习之AbstractCollection学习</a>
           </li>
         
       </ul>
