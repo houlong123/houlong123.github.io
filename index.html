@@ -61,6 +61,51 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-HashMap源码学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/02/02/HashMap源码学习/" class="article-date">
+  <time datetime="2018-02-02T05:32:21.000Z" itemprop="datePublished">2018-02-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/02/02/HashMap源码学习/">HashMap源码学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>Java为数据结构中的映射定义了一个接口java.util.Map，此接口主要有四个常用的实现类，分别是HashMap、Hashtable、LinkedHashMap和TreeMap。其中HashMap是Java程序员使用频率最高的用于映射(键值对)处理的数据类型。<font color="red">HashMap是一种无序的，且允许null作为键值对的Map集合。该类除了不是同步的，且允许null键值对外，其他都与Hashtable基本一致。</font>由于Hashtable是遗留类，且并发性不如ConcurrentHashMap，所以在新代码中基本上不使用。HashMap的底层采用 <code>Node数组+链表+红黑树</code> 的存储结构。该类除了没有并发功能外，与 <a href="https://houlong123.github.io/2017/11/07/ConcurrentHashMap源码学习/">ConcurrentHashMap</a> 类基本一致。</p>
+<p><a data-flickr-embed="true" href="https://www.flickr.com/photos/157389715@N05/25164209287/in/dateposted-public/" title="存储结构" target="_blank" rel="noopener"><img src="https://farm5.staticflickr.com/4649/25164209287_7a8a2fa261.jpg" width="500" height="170" alt="665f644e43731ff9db3d341da5c827e1"></a></p>
+<h4 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h4>
+        
+          <p class="article-more-link">
+            <a href="/2018/02/02/HashMap源码学习/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2018/02/02/HashMap源码学习/" data-id="cjd5immci000yzv0m7pwn5u31" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-AbstractMap源码学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/01/30/AbstractMap源码学习/" class="article-date">
@@ -93,7 +138,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/30/AbstractMap源码学习/" data-id="cjd5i5a8t0001va0m151bp66l" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/30/AbstractMap源码学习/" data-id="cjd5imm530001zv0mgn2bgeko" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -140,7 +185,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/29/Set相关集合源码学习/" data-id="cjd5i5abd001vva0mi2k0nyy8" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/29/Set相关集合源码学习/" data-id="cjd5immh1001xzv0m6avelt5m" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -187,7 +232,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/26/LinkedList源码学习/" data-id="cjd5i5aat001bva0mp0g330ce" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/26/LinkedList源码学习/" data-id="cjd5imme8001dzv0m059hhbhi" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -233,7 +278,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/23/ArrayList源码学习/" data-id="cjd5i5a9a0005va0mkmuiz222" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/23/ArrayList源码学习/" data-id="cjd5imm7n0005zv0mwqxxdjxz" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -279,7 +324,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/19/java基础集合源码学习之AbstractList学习/" data-id="cjd5i5abr0029va0monybkkaf" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/19/java基础集合源码学习之AbstractList学习/" data-id="cjd5immj5002bzv0mqzkqse56" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -325,7 +370,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/17/java基础集合源码学习之AbstractCollection学习/" data-id="cjd5i5abq0027va0m8d5okdj6" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/17/java基础集合源码学习之AbstractCollection学习/" data-id="cjd5immj10029zv0mbfj5rcao" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -369,7 +414,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/08/CyclicBarrier源码学习/" data-id="cjd5i5aa2000mva0mijhu7wzo" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/08/CyclicBarrier源码学习/" data-id="cjd5immar000mzv0mnnrjabkb" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -413,7 +458,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/04/Semaphore-信号量-源码学习/" data-id="cjd5i5abb001sva0m16uv6jp3" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/04/Semaphore-信号量-源码学习/" data-id="cjd5immgw001vzv0mce0syc27" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -465,60 +510,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/03/Executor框架源码学习/" data-id="cjd5i5aa6000rva0mikz3wxpa" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/03/Executor框架源码学习/" data-id="cjd5immbi000rzv0m6n3uuhmm" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发/">java并发</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Linux系统dokuwiki部署" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/28/Linux系统dokuwiki部署/" class="article-date">
-  <time datetime="2017-12-28T07:17:21.000Z" itemprop="datePublished">2017-12-28</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/28/Linux系统dokuwiki部署/">Linux系统dokuwiki部署</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h5 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h5><p>DokuWiki是一个开源wiki引擎程序，运行于PHP环境下。所以在部署安装DokuWiki之前，需要确认待部署的机器上已有PHP环境。</p>
-<h5 id="dokuwiki项目部署"><a href="#dokuwiki项目部署" class="headerlink" title="dokuwiki项目部署"></a>dokuwiki项目部署</h5><ol>
-<li>在官网下载dokuwiki包，并解压</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//包下载</span><br><span class="line">wget -c http://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz</span><br><span class="line"></span><br><span class="line">//解压。解压后将解压后的包放在目录/var/www/下，并把包命名dokuwiki。在部署Nginx时，需要用到该目录。如需修改，则需要修改Nginx配置及执行run.sh 的参数。</span><br><span class="line">tar -zvxf dokuwiki-stable.tgz</span><br></pre></td></tr></table></figure>
-<ol>
-<li>变更权限</li>
-</ol>
-        
-          <p class="article-more-link">
-            <a href="/2017/12/28/Linux系统dokuwiki部署/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/12/28/Linux系统dokuwiki部署/" data-id="cjd5i5aaw001dva0mdcvudhl4" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dokuwiki部署/">dokuwiki部署</a></li></ul>
 
     </footer>
   </div>
@@ -555,7 +550,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 16px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 18px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
     </div>
   </div>
 
@@ -564,7 +559,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
     </div>
   </div>
 
@@ -575,6 +570,10 @@
     <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/02/02/HashMap源码学习/">HashMap源码学习</a>
+          </li>
         
           <li>
             <a href="/2018/01/30/AbstractMap源码学习/">AbstractMap源码学习</a>
@@ -590,10 +589,6 @@
         
           <li>
             <a href="/2018/01/23/ArrayList源码学习/">ArrayList源码学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/19/java基础集合源码学习之AbstractList学习/">java基础集合源码学习之AbstractList学习</a>
           </li>
         
       </ul>
