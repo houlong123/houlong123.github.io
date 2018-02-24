@@ -61,6 +61,59 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Spring-AOP源码学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/22/Spring-AOP源码学习/" class="article-date">
+  <time datetime="2017-08-22T06:13:31.000Z" itemprop="datePublished">2017-08-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/22/Spring-AOP源码学习/">Spring AOP源码学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="AOP基础知识"><a href="#AOP基础知识" class="headerlink" title="AOP基础知识"></a>AOP基础知识</h4><p>AOP(Aspect-Oriented Programming)：面向切面编程。OOP(Object-Oriented Programming)面向对象的编程。其实AOP是对OOP的一种补充。OOP面向的是纵向编程，<code>继承，封装，多态</code>是其三大特性，而AOP是面向横向编程。在OOP中，模块化的关键是<code>类(class)</code>，而在AOP中，模块化的关键是<code>切面(aspect)</code>。</p>
+<h5 id="AOP概念术语"><a href="#AOP概念术语" class="headerlink" title="AOP概念术语"></a>AOP概念术语</h5><ul>
+<li><strong>切面(Aspect)</strong>：一个关注点的模块化，这个关注点可能会横切多个对象。</li>
+<li><strong>连接点(Joinpoint)</strong>：在程序执行过程中某个特定的点。在Spring AOP中，<code>一个连接点总是表示一个方法的执行</code>。</li>
+<li><strong>通知(Advice)</strong>：在切面的某个特定的连接点上执行的动作。包括：<code>around</code>, <code>before</code>, <code>after</code>等不同类型的通知。</li>
+<li><strong>切入点(Pointcut)</strong>：匹配连接点的断言。通知和一个切入点表达式关联，并在满足这个切入点的连接点上运行。</li>
+<li><strong>引入(Introduction)</strong>：用来给一个类型说明额外的方法或者属性。</li>
+<li><strong>目标对象(Target Object)</strong>：被一个或者多个切面所通知的对象。既然Spring AOP是通过运行时代理实现的，这个对象永远是一个被代理（proxied）对象。</li>
+<li><strong>AOP代理(AOP Proxy)</strong>：AOP框架创建的对象，用来实现切面契约（例如通知方法执行等等）。在Spring中，AOP代理可以是<a href="https://houlong123.github.io/2017/07/31/AOP%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6/">JDK动态代理或者CGLIB代理</a>。</li>
+<li><strong>织入(Weaving)</strong>：把切面连接到其他的应用程序类型或者对象上，并创建一个被通知的对象。</li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/2017/08/22/Spring-AOP源码学习/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/08/22/Spring-AOP源码学习/" data-id="cje116m0b0029h70maz0bu0lq" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-IO学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/08/19/IO学习/" class="article-date">
@@ -94,7 +147,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/19/IO学习/" data-id="cjd5immd00013zv0mrimth9m9" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/19/IO学习/" data-id="cje116lz6000yh70mkdii36dl" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -145,7 +198,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/18/Bean加载流程之配置文件占位符替换/" data-id="cjd5imm8o0009zv0mvothhbqv" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/18/Bean加载流程之配置文件占位符替换/" data-id="cje116lyf000bh70mxcwi8cot" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -190,7 +243,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/12/Bean加载流程之BeanWrapper构建/" data-id="cjd5imm7z0008zv0mg6x5wfbv" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/12/Bean加载流程之BeanWrapper构建/" data-id="cje116lyb0008h70mtqbd94oa" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -237,7 +290,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/10/Bean加载流程梳理之BeanDefinitions加载/" data-id="cjd5imm8t000bzv0mksnazzt6" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/10/Bean加载流程梳理之BeanDefinitions加载/" data-id="cje116lyd0009h70mfj9j1r3g" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -286,7 +339,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/31/AOP学习之实现机制/" data-id="cjd5imm470000zv0me738j58h" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/31/AOP学习之实现机制/" data-id="cje116lxn0000h70mknwxu085" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -333,7 +386,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/11/String讲解/" data-id="cjd5immie0024zv0mjr1m2tlx" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/11/String讲解/" data-id="cje116m080024h70mbmpgueos" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -384,7 +437,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/10/Interceptor讲解/" data-id="cjd5immd90016zv0ml56tgl2p" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/10/Interceptor讲解/" data-id="cje116lz90013h70mov4518o6" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -434,7 +487,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/07/内部类/" data-id="cjd5immjj002hzv0moo73jiej" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/07/内部类/" data-id="cje116m0g002hh70mpjkxdis3" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -481,69 +534,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/06/Spring-MVC文件下载/" data-id="cjd5immi40022zv0mnzl1ku3u" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/06/Spring-MVC文件下载/" data-id="cje116m040020h70m4x3sp1nu" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-java接口" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/05/java接口/" class="article-date">
-  <time datetime="2017-07-05T10:59:44.000Z" itemprop="datePublished">2017-07-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/05/java接口/">java接口</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><i><font color="red">接口和内部类为我们提供了一种将接口与实现分离的更加结构化的方法。</font></i></p>
-<h4 id="抽象类与抽象方法"><a href="#抽象类与抽象方法" class="headerlink" title="抽象类与抽象方法"></a>抽象类与抽象方法</h4><ul>
-<li><p>抽象方法</p>
-<p>  仅有声明而没有方法体的方法叫抽象方法。</p>
-</li>
-<li><p>抽象类</p>
-<p>  包含抽象方法的类叫做抽象类。</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">为抽象类创建对象是不安全的。即：抽象类不能创建对象。</span><br></pre></td></tr></table></figure>
-<h4 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h4><p><i><font color="red">interface是一个极度抽象的类，interface这个关键字产生一个安全抽象的类，根本没有提供任何具体实现。</font></i></p>
-<h5 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h5><ul>
-<li>在interface中，所有方法在声明时即使不加public，默认是public</li>
-<li>interface中可以包含域，这些域隐式的为 <font color="red"><code>static final</code></font>的。这些域不是接口的一部分，他们的值被存储在该接口的静态存储区域内。</li>
-<li>在Java中，不支持多重继承。但是，interface可以支持多重继承。</li>
-</ul>
-<h5 id="使用接口的原因"><a href="#使用接口的原因" class="headerlink" title="使用接口的原因"></a>使用接口的原因</h5><ul>
-<li>核心原因：为了能够向上转型为多个基类型（策略模式实现的基础）</li>
-<li>为了防止客户端程序员创建该类的对象</li>
-</ul>
-<h4 id="抽象类与接口的区别"><a href="#抽象类与接口的区别" class="headerlink" title="抽象类与接口的区别"></a>抽象类与接口的区别</h4><p>interface是 <font color="red"><code>like a</code></font>关系，定义该体系的额外功能；抽象类是 <font color="red"><code>is a</code></font>关系，定义该体系的基本共性内容。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/05/java接口/" data-id="cjd5immjg002fzv0mwy5w1uxm" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
     </footer>
   </div>
@@ -580,7 +574,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 18px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
     </div>
   </div>
 
@@ -602,6 +596,10 @@
       <ul>
         
           <li>
+            <a href="/2018/02/24/LinkedHashMap源码学习/">LinkedHashMap源码学习</a>
+          </li>
+        
+          <li>
             <a href="/2018/02/02/HashMap源码学习/">HashMap源码学习</a>
           </li>
         
@@ -615,10 +613,6 @@
         
           <li>
             <a href="/2018/01/26/LinkedList源码学习/">LinkedList源码学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/23/ArrayList源码学习/">ArrayList源码学习</a>
           </li>
         
       </ul>

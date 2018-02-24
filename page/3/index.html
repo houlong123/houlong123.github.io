@@ -61,6 +61,52 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-ConcurrentLinkedQueue源码学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/10/ConcurrentLinkedQueue源码学习/" class="article-date">
+  <time datetime="2017-11-10T06:52:42.000Z" itemprop="datePublished">2017-11-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/10/ConcurrentLinkedQueue源码学习/">ConcurrentLinkedQueue源码学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p><a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentLinkedQueue.html" target="_blank" rel="noopener">ConcurerntLinkedQueue</a><br>一个 <strong><code>基于链接节点的无界线程安全的FIFO队列</code></strong>。和其他大部分并发集合类似，此队列不允许使用null元素。</p>
+<p><img src="http://images2015.cnblogs.com/blog/616953/201605/616953-20160531094819899-444696106.png" alt="ConcurerntLinkedQueue数据结构"></p>
+<h4 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h4><h5 id="内部数据结构"><a href="#内部数据结构" class="headerlink" title="内部数据结构"></a>内部数据结构</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcurrentLinkedQueue</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractQueue</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">        <span class="keyword">implements</span> <span class="title">Queue</span>&lt;<span class="title">E</span>&gt;, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">    <span class="comment">//内部节点类</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">        <span class="keyword">volatile</span> E item;    <span class="comment">//表示元素</span></span><br><span class="line">        <span class="keyword">volatile</span> Node&lt;E&gt; next;  <span class="comment">//表示下一个结点</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> Node&lt;E&gt; head;    <span class="comment">//头结点</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> Node&lt;E&gt; tail;    <span class="comment">//尾节点</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//遍历器类</span></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Itr</span> <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * Next node to return item for.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">private</span> Node&lt;E&gt; nextNode;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * nextItem holds on to item fields because once we claim</span></span><br><span class="line"><span class="comment">         * that an element exists in hasNext(), we must return it in</span></span><br><span class="line"><span class="comment">         * the following next() call even if it was in the process of</span></span><br><span class="line"><span class="comment">         * being removed when hasNext() was called.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">private</span> E nextItem;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * Node of the last returned item, to support remove.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">private</span> Node&lt;E&gt; lastRet;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从源码可知，<code>ConcurrentLinkedQueue</code> 继承了<code>AbstractQueue</code>抽象类并实现了<code>Queue</code> 与 <code>Serializable</code> 接口。其内部数据结构有：</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/11/10/ConcurrentLinkedQueue源码学习/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/11/10/ConcurrentLinkedQueue源码学习/" data-id="cje116lyn000hh70m6z523zyy" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-ConcurrentHashMap源码学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/11/07/ConcurrentHashMap源码学习/" class="article-date">
@@ -95,7 +141,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/07/ConcurrentHashMap源码学习/" data-id="cjd5imm98000dzv0m81bt1dcp" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/07/ConcurrentHashMap源码学习/" data-id="cje116lyh000dh70mti9nyl2f" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -208,7 +254,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/01/Mysql根据指定数据确定分页/" data-id="cjd5immfe001lzv0m8lx7gy11" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/01/Mysql根据指定数据确定分页/" data-id="cje116lzr001nh70m40y93ri9" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li></ul>
@@ -253,7 +299,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/10/15/java并发学习之StampedLock学习/" data-id="cjd5immjd002dzv0miut6uvpf" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/10/15/java并发学习之StampedLock学习/" data-id="cje116m0h002lh70my2pmm2qk" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -297,7 +343,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/09/28/ReentrantReadWriteLock源码学习/" data-id="cjd5immg7001qzv0mjszo6chv" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/09/28/ReentrantReadWriteLock源码学习/" data-id="cje116lzx001vh70mmh6pn60j" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -340,7 +386,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/09/26/CountDownLatch源码学习/" data-id="cjd5immaj000kzv0mt73srik8" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/09/26/CountDownLatch源码学习/" data-id="cje116lyo000kh70mj58tyhit" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -385,7 +431,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/09/25/Reentrantlock源码学习/" data-id="cjd5immgo001szv0m7ige92ua" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/09/25/Reentrantlock源码学习/" data-id="cje116lzv001sh70melrryf8r" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -433,7 +479,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/09/11/AbstractQueuedSyncchronizer源码学习/" data-id="cjd5imm6c0003zv0m1edtco1u" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/09/11/AbstractQueuedSyncchronizer源码学习/" data-id="cje116ly00003h70mdliido61" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -487,7 +533,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/29/JdbcTemplate学习/" data-id="cjd5immdg0018zv0mxn64pntp" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/29/JdbcTemplate学习/" data-id="cje116lzb0016h70muldtw4sy" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -527,63 +573,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/25/Mysql修改表主键/" data-id="cjd5immf7001izv0m5nyevx7h" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/25/Mysql修改表主键/" data-id="cje116lzo001lh70mkol5b3pm" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Spring-AOP源码学习" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/08/22/Spring-AOP源码学习/" class="article-date">
-  <time datetime="2017-08-22T06:13:31.000Z" itemprop="datePublished">2017-08-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/22/Spring-AOP源码学习/">Spring AOP源码学习</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="AOP基础知识"><a href="#AOP基础知识" class="headerlink" title="AOP基础知识"></a>AOP基础知识</h4><p>AOP(Aspect-Oriented Programming)：面向切面编程。OOP(Object-Oriented Programming)面向对象的编程。其实AOP是对OOP的一种补充。OOP面向的是纵向编程，<code>继承，封装，多态</code>是其三大特性，而AOP是面向横向编程。在OOP中，模块化的关键是<code>类(class)</code>，而在AOP中，模块化的关键是<code>切面(aspect)</code>。</p>
-<h5 id="AOP概念术语"><a href="#AOP概念术语" class="headerlink" title="AOP概念术语"></a>AOP概念术语</h5><ul>
-<li><strong>切面(Aspect)</strong>：一个关注点的模块化，这个关注点可能会横切多个对象。</li>
-<li><strong>连接点(Joinpoint)</strong>：在程序执行过程中某个特定的点。在Spring AOP中，<code>一个连接点总是表示一个方法的执行</code>。</li>
-<li><strong>通知(Advice)</strong>：在切面的某个特定的连接点上执行的动作。包括：<code>around</code>, <code>before</code>, <code>after</code>等不同类型的通知。</li>
-<li><strong>切入点(Pointcut)</strong>：匹配连接点的断言。通知和一个切入点表达式关联，并在满足这个切入点的连接点上运行。</li>
-<li><strong>引入(Introduction)</strong>：用来给一个类型说明额外的方法或者属性。</li>
-<li><strong>目标对象(Target Object)</strong>：被一个或者多个切面所通知的对象。既然Spring AOP是通过运行时代理实现的，这个对象永远是一个被代理（proxied）对象。</li>
-<li><strong>AOP代理(AOP Proxy)</strong>：AOP框架创建的对象，用来实现切面契约（例如通知方法执行等等）。在Spring中，AOP代理可以是<a href="https://houlong123.github.io/2017/07/31/AOP%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6/">JDK动态代理或者CGLIB代理</a>。</li>
-<li><strong>织入(Weaving)</strong>：把切面连接到其他的应用程序类型或者对象上，并创建一个被通知的对象。</li>
-</ul>
-        
-          <p class="article-more-link">
-            <a href="/2017/08/22/Spring-AOP源码学习/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/22/Spring-AOP源码学习/" data-id="cjd5immhu0020zv0mw2g5vn71" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
 
     </footer>
   </div>
@@ -620,7 +613,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 18px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
     </div>
   </div>
 
@@ -642,6 +635,10 @@
       <ul>
         
           <li>
+            <a href="/2018/02/24/LinkedHashMap源码学习/">LinkedHashMap源码学习</a>
+          </li>
+        
+          <li>
             <a href="/2018/02/02/HashMap源码学习/">HashMap源码学习</a>
           </li>
         
@@ -655,10 +652,6 @@
         
           <li>
             <a href="/2018/01/26/LinkedList源码学习/">LinkedList源码学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/23/ArrayList源码学习/">ArrayList源码学习</a>
           </li>
         
       </ul>
