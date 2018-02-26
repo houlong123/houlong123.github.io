@@ -61,6 +61,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Spring-MVC文件下载" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/06/Spring-MVC文件下载/" class="article-date">
+  <time datetime="2017-07-06T03:41:48.000Z" itemprop="datePublished">2017-07-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/06/Spring-MVC文件下载/">Spring MVC文件下载</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><i><font color="red"><strong>文件下载的本质是从服务器读取要下载的文件，把文件转化为流，然后读取流。</strong></font></i></p>
+<h4 id="文件下载的方式"><a href="#文件下载的方式" class="headerlink" title="文件下载的方式"></a>文件下载的方式</h4><ul>
+<li>普遍实现方式</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 文件下载</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> response  响应体</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> file  文件目录</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">downLoadFile</span><span class="params">(HttpServletResponse response, File file)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">if</span> (file == <span class="keyword">null</span> || !file.exists()) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125; </span><br><span class="line">    OutputStream out = <span class="keyword">null</span>; </span><br><span class="line">    <span class="keyword">try</span> &#123; </span><br><span class="line">    	<span class="comment">//设置response信息头</span></span><br><span class="line">        response.reset(); </span><br><span class="line">        response.setContentType(<span class="string">"application/octet-stream; charset=utf-8"</span>); </span><br><span class="line">        response.setHeader(<span class="string">"Content-Disposition"</span>, <span class="string">"attachment; filename="</span> + file.getName()); </span><br><span class="line">        <span class="comment">//读取文件流</span></span><br><span class="line">        out = response.getOutputStream(); </span><br><span class="line">        out.write(FileUtils.readFileToByteArray(file)); </span><br><span class="line">        out.flush(); </span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123; </span><br><span class="line">        e.printStackTrace(); </span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123; </span><br><span class="line">        <span class="keyword">if</span> (out != <span class="keyword">null</span>) &#123; </span><br><span class="line">            <span class="keyword">try</span> &#123; </span><br><span class="line">                out.close(); </span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123; </span><br><span class="line">                e.printStackTrace(); </span><br><span class="line">            &#125; </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方式比较普通，是在之前的servlet中比较常用，但是在Spring MVC 项目中，还有一种比较优雅的实现方式，详情如下。</p>
+<ul>
+<li>Spring MVC实现方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 文件下载</span><br><span class="line"> * @param fileName  文件名</span><br><span class="line"> * @param file  文件目录</span><br><span class="line"> * @return</span><br><span class="line"> */</span><br><span class="line">public ResponseEntity&lt;byte[]&gt; download(String fileName, File file) throws IOException &#123; </span><br><span class="line">    String dfileName = new String(fileName.getBytes(&quot;gb2312&quot;), &quot;iso8859-1&quot;); </span><br><span class="line">    HttpHeaders headers = new HttpHeaders(); </span><br><span class="line">    headers.setContentType(MediaType.APPLICATION_OCTET_STREAM); </span><br><span class="line">    headers.setContentDispositionFormData(&quot;attachment&quot;, dfileName); </span><br><span class="line">    return new ResponseEntity&lt;byte[]&gt;(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/07/06/Spring-MVC文件下载/" data-id="cje429q520020fb0mpc2jyqa4" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-java接口" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/07/05/java接口/" class="article-date">
@@ -108,7 +155,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/05/java接口/" data-id="cje116m0f002fh70mhut6t121" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/05/java接口/" data-id="cje429q5f002hfb0m5h1qavdm" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -181,7 +228,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/03/部署GitHub-Page/" data-id="cje116m0h002jh70mhgv73900" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/03/部署GitHub-Page/" data-id="cje429q5i002lfb0muny62kfl" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/部署GitHub-Page/">部署GitHub Page</a></li></ul>
@@ -228,7 +275,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/06/30/Hexo使用方法/" data-id="cje116lz80011h70m4a8rzhx9" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/06/30/Hexo使用方法/" data-id="cje429q43000wfb0mic2e3dtr" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li></ul>
@@ -268,7 +315,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+      <a href="/tags/Mysql/" style="font-size: 11.67px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 13.33px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 16.67px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 18.33px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
     </div>
   </div>
 
@@ -290,6 +337,10 @@
       <ul>
         
           <li>
+            <a href="/2018/02/26/TreeMap源码学习/">TreeMap源码学习</a>
+          </li>
+        
+          <li>
             <a href="/2018/02/24/LinkedHashMap源码学习/">LinkedHashMap源码学习</a>
           </li>
         
@@ -303,10 +354,6 @@
         
           <li>
             <a href="/2018/01/29/Set相关集合源码学习/">Set相关集合源码学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/26/LinkedList源码学习/">LinkedList源码学习</a>
           </li>
         
       </ul>

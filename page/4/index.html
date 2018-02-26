@@ -61,6 +61,46 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Mysql修改表主键" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/25/Mysql修改表主键/" class="article-date">
+  <time datetime="2017-08-25T06:15:56.000Z" itemprop="datePublished">2017-08-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/25/Mysql修改表主键/">Mysql修改表主键</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原来有一个字段id,为自增,主键,索引。现在要新增一个字段s_id为自增,主键,索引.同时把原来的主字段改成普通字段,默认值为0.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Alter table xxx change s_id s_id int(10) NOT NULL DEFAULT 0;  //去除原来字段的自增属性,不然无法删除这个主键</span><br><span class="line">Alter table xxx drop primary key;  //删除主键</span><br><span class="line">drop index s_id on xxx;  //删除索引,注意这个表原来就只有一个索引</span><br><span class="line"></span><br><span class="line">Alter table xxx add column id int(10) NOT NULL DEFAULT 0 FIRST;  //新建一个字段,无法直接新建自增字段,因为不是主键</span><br><span class="line">Alter table xxx add primary key(id); //改为主键,然后才能用自增字段</span><br><span class="line">Alter table xxx change id id int(10) NOT NULL AUTO_INCREMENT;  //改成自增字段</span><br><span class="line">Alter table xxx add UNIQUE INDEX `id` (`id`) USING BTREE ;  //把这个字段改成索引</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/08/25/Mysql修改表主键/" data-id="cje429q4j001ifb0mwz491hx6" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Spring-AOP源码学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/08/22/Spring-AOP源码学习/" class="article-date">
@@ -102,7 +142,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/22/Spring-AOP源码学习/" data-id="cje116m0b0029h70maz0bu0lq" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/22/Spring-AOP源码学习/" data-id="cje429q580027fb0mcwg4tw0x" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -147,7 +187,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/19/IO学习/" data-id="cje116lz6000yh70mkdii36dl" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/19/IO学习/" data-id="cje429q470011fb0mllmhbh9i" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -198,7 +238,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/18/Bean加载流程之配置文件占位符替换/" data-id="cje116lyf000bh70mxcwi8cot" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/18/Bean加载流程之配置文件占位符替换/" data-id="cje429q3j0009fb0mqbf4p3hi" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -243,7 +283,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/12/Bean加载流程之BeanWrapper构建/" data-id="cje116lyb0008h70mtqbd94oa" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/12/Bean加载流程之BeanWrapper构建/" data-id="cje429q3g0008fb0m2z9gl5en" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -290,7 +330,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/10/Bean加载流程梳理之BeanDefinitions加载/" data-id="cje116lyd0009h70mfj9j1r3g" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/10/Bean加载流程梳理之BeanDefinitions加载/" data-id="cje429q3l000bfb0mjndvrmus" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -339,7 +379,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/31/AOP学习之实现机制/" data-id="cje116lxn0000h70mknwxu085" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/31/AOP学习之实现机制/" data-id="cje429q2t0000fb0mm7fcaryc" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -386,7 +426,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/11/String讲解/" data-id="cje116m080024h70mbmpgueos" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/11/String讲解/" data-id="cje429q530022fb0msd8rp2ae" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -437,7 +477,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/10/Interceptor讲解/" data-id="cje116lz90013h70mov4518o6" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/10/Interceptor讲解/" data-id="cje429q4c0018fb0mqczpfr3x" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -487,57 +527,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/07/内部类/" data-id="cje116m0g002hh70mpjkxdis3" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/07/内部类/" data-id="cje429q5g002jfb0m8ppkx9y8" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Spring-MVC文件下载" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/06/Spring-MVC文件下载/" class="article-date">
-  <time datetime="2017-07-06T03:41:48.000Z" itemprop="datePublished">2017-07-06</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/06/Spring-MVC文件下载/">Spring MVC文件下载</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><i><font color="red"><strong>文件下载的本质是从服务器读取要下载的文件，把文件转化为流，然后读取流。</strong></font></i></p>
-<h4 id="文件下载的方式"><a href="#文件下载的方式" class="headerlink" title="文件下载的方式"></a>文件下载的方式</h4><ul>
-<li>普遍实现方式</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 文件下载</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> response  响应体</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> file  文件目录</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">downLoadFile</span><span class="params">(HttpServletResponse response, File file)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">if</span> (file == <span class="keyword">null</span> || !file.exists()) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125; </span><br><span class="line">    OutputStream out = <span class="keyword">null</span>; </span><br><span class="line">    <span class="keyword">try</span> &#123; </span><br><span class="line">    	<span class="comment">//设置response信息头</span></span><br><span class="line">        response.reset(); </span><br><span class="line">        response.setContentType(<span class="string">"application/octet-stream; charset=utf-8"</span>); </span><br><span class="line">        response.setHeader(<span class="string">"Content-Disposition"</span>, <span class="string">"attachment; filename="</span> + file.getName()); </span><br><span class="line">        <span class="comment">//读取文件流</span></span><br><span class="line">        out = response.getOutputStream(); </span><br><span class="line">        out.write(FileUtils.readFileToByteArray(file)); </span><br><span class="line">        out.flush(); </span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123; </span><br><span class="line">        e.printStackTrace(); </span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123; </span><br><span class="line">        <span class="keyword">if</span> (out != <span class="keyword">null</span>) &#123; </span><br><span class="line">            <span class="keyword">try</span> &#123; </span><br><span class="line">                out.close(); </span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123; </span><br><span class="line">                e.printStackTrace(); </span><br><span class="line">            &#125; </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这种方式比较普通，是在之前的servlet中比较常用，但是在Spring MVC 项目中，还有一种比较优雅的实现方式，详情如下。</p>
-<ul>
-<li>Spring MVC实现方式</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 文件下载</span><br><span class="line"> * @param fileName  文件名</span><br><span class="line"> * @param file  文件目录</span><br><span class="line"> * @return</span><br><span class="line"> */</span><br><span class="line">public ResponseEntity&lt;byte[]&gt; download(String fileName, File file) throws IOException &#123; </span><br><span class="line">    String dfileName = new String(fileName.getBytes(&quot;gb2312&quot;), &quot;iso8859-1&quot;); </span><br><span class="line">    HttpHeaders headers = new HttpHeaders(); </span><br><span class="line">    headers.setContentType(MediaType.APPLICATION_OCTET_STREAM); </span><br><span class="line">    headers.setContentDispositionFormData(&quot;attachment&quot;, dfileName); </span><br><span class="line">    return new ResponseEntity&lt;byte[]&gt;(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/06/Spring-MVC文件下载/" data-id="cje116m040020h70m4x3sp1nu" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
 
     </footer>
   </div>
@@ -574,7 +567,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Mysql/" style="font-size: 12px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 16px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 14px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 18px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 20px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+      <a href="/tags/Mysql/" style="font-size: 11.67px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 13.33px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 16.67px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 18.33px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
     </div>
   </div>
 
@@ -596,6 +589,10 @@
       <ul>
         
           <li>
+            <a href="/2018/02/26/TreeMap源码学习/">TreeMap源码学习</a>
+          </li>
+        
+          <li>
             <a href="/2018/02/24/LinkedHashMap源码学习/">LinkedHashMap源码学习</a>
           </li>
         
@@ -609,10 +606,6 @@
         
           <li>
             <a href="/2018/01/29/Set相关集合源码学习/">Set相关集合源码学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/26/LinkedList源码学习/">LinkedList源码学习</a>
           </li>
         
       </ul>
