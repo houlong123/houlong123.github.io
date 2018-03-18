@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://on66azf8w.bkt.clouddn.com/blog/20170403/200928395.png">
 <meta property="og:image" content="http://img.blog.csdn.net/20170818112709577?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMDY1NjM2MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://on66azf8w.bkt.clouddn.com/blog/20170403/203005227.png">
-<meta property="og:updated_time" content="2018-03-18T04:00:25.497Z">
+<meta property="og:updated_time" content="2018-03-18T04:02:56.813Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JVM 学习">
 <meta name="twitter:description" content="前言关于java虚拟机的学习，网上有许多学习文章。同时周志明编写的图书：《深入理解JVM虚拟机》也是JVM学习者必读图书之一。虽说之前也有相关的学习过，但是一直没有进行梳理，导致知识相对很零散，所以为了日后方便自己或他人学习，本文将对JVM进行简略的知识梳理。 内存模型Java内存模型，往往是指Java程序在运行时内存的模型，而Java代码是运行在Java虚拟机之上的，由Java虚拟机通过解释执行">
@@ -107,6 +107,7 @@
 <h4 id="内存模型"><a href="#内存模型" class="headerlink" title="内存模型"></a>内存模型</h4><p>Java内存模型，往往是指Java程序在运行时内存的模型，而Java代码是运行在Java虚拟机之上的，由Java虚拟机通过解释执行(解释器)或编译执行(即时编译器)来完成，故Java内存模型，也就是指Java虚拟机的运行时内存模型。</p>
 <p><img src="http://gityuan.com/images/jvm/jvm_memory_1.png" alt="JVM运行时数据区"></p>
 <p>JVM运行时数据区，包括5部分：<font color="red">堆，方法区，程序计数器，虚拟机栈，本地方法栈。</font>在这5部分中，其中：<code>堆，方法区是共享数据区，即所有线程共享的内存区域；程序计数器，虚拟机栈，本地方法栈是线程私有，即每个线程都会有自己的独立内存区域，各线程之间互不影响，独立存储</code>。</p>
+<a id="more"></a>
 <ul>
 <li>线程共享数据区</li>
 </ul>
@@ -115,7 +116,6 @@
 <p>存放对象实例的区域。对象实例以及数组的内存分配都是在堆中进行</p>
 </li>
 </ol>
-<a id="more"></a>
 <ol>
 <li><p>方法区</p>
 <p>存储已被虚拟机加载的 <strong><font color="gray">类信息，常量，静态变量，即时编译后的代码等数据</font></strong>。常量池位于方法区，并使用永久代来实现方法区。（JDK1.8对此进行了修改，在JDK1.8中没有了永久代的概念，取而代之的是元空间。关于这点，下文在讲解）</p>
@@ -427,7 +427,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/03/18/JVM-学习/" data-id="cjew9wqqr00181c0mw7u2pbqu" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/03/18/JVM-学习/" data-id="cjew9zzlh0018250mfs6je5g1" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
