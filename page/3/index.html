@@ -61,6 +61,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-PriorityBlockingQueue源码学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/29/PriorityBlockingQueue源码学习/" class="article-date">
+  <time datetime="2017-11-29T07:04:04.000Z" itemprop="datePublished">2017-11-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/29/PriorityBlockingQueue源码学习/">PriorityBlockingQueue源码学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>PropertyBlockingQueue 是<code>基于数组实现的线程安全的无界队列，它是基于优先级，而不是FIFO队列</code>。默认情况下元素采取自然顺序升序排列，也可以自定义类实现compareTo()方法来指定元素排序规则，需要注意的是不能保证同优先级元素的顺序。虽说是无界的，但有可能会导致OutOfMemoryError异常。</p>
+<h4 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h4><p><img src="http://img.blog.csdn.net/20160708151139090?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image"></p>
+<h4 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PriorityBlockingQueue</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractQueue</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">BlockingQueue</span>&lt;<span class="title">E</span>&gt;, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//队列默认大小</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_INITIAL_CAPACITY = <span class="number">11</span>;  </span><br><span class="line">    <span class="comment">//队列最大容量，超过该容量抛OutOfMemoryError异常</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_ARRAY_SIZE = Integer.MAX_VALUE - <span class="number">8</span>;</span><br><span class="line">    <span class="comment">//优先级队列表示为平衡二叉堆。queue[0]为元素最小值。PriorityBlockingQueue 底层还是通过数组来实现的</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> Object[] queue;</span><br><span class="line">    <span class="comment">//队列元素个数 不序列化</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">int</span> size;</span><br><span class="line">    <span class="comment">//比较器。在为null时使用元素的自然排序</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> Comparator&lt;? <span class="keyword">super</span> E&gt; comparator;</span><br><span class="line">    <span class="comment">//用于队列操作的锁</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ReentrantLock lock;</span><br><span class="line">    <span class="comment">//队列非空条件</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Condition notEmpty;</span><br><span class="line">    <span class="comment">//队列扩容的 "锁" 不序列化</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> <span class="keyword">int</span> allocationSpinLock;</span><br><span class="line">    <span class="comment">//队列扩容的 "锁" 不序列化</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> <span class="keyword">int</span> allocationSpinLock;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>PriorityBlockingQueue 与ArrayBlockingQueue，LinkedBlockingQueue阻塞队列不同，它的内部只维持了一个notEmpty条件，没有notFull 条件，也就是说PriorityBlockingQueue 没有队满的概念。当队列满的时候，进行扩容，当达到最大容量时，会抛出OutOfMemoryError异常。与ArrayBlockingQueue一致的是都是维持了一个锁来控制出入队行为，且底层也是通过数组实现。而LinkedBlockingQueue是通过两个锁来进行控制。</p>
+<h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4>
+        
+          <p class="article-more-link">
+            <a href="/2017/11/29/PriorityBlockingQueue源码学习/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/11/29/PriorityBlockingQueue源码学习/" data-id="cjfguk7xi001xer0m6wizva0m" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-LinkedBlockingQueue源码学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/11/21/LinkedBlockingQueue源码学习/" class="article-date">
@@ -96,7 +143,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/21/LinkedBlockingQueue源码学习/" data-id="cjezh0fsf001hh30m8eh6wqit" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/21/LinkedBlockingQueue源码学习/" data-id="cjfguk7wy001ier0m9i6t5gfw" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -142,7 +189,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/16/ArrayBlockingQueue源码学习/" data-id="cjezh0fqv0004h30mt6gp9cvk" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/16/ArrayBlockingQueue源码学习/" data-id="cjfguk7v60004er0m32d0fj48" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -190,7 +237,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/14/CopyOnWriteArrayList源码学习/" data-id="cjezh0frj000ih30mr15q9xne" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/14/CopyOnWriteArrayList源码学习/" data-id="cjfguk7vv000her0mt96n8ucv" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -236,7 +283,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/10/ConcurrentLinkedQueue源码学习/" data-id="cjezh0frf000eh30m7ho3ybj9" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/10/ConcurrentLinkedQueue源码学习/" data-id="cjfguk7vt000fer0mbv46e4h3" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -282,7 +329,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/07/ConcurrentHashMap源码学习/" data-id="cjezh0frh000gh30m3kib2wf4" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/07/ConcurrentHashMap源码学习/" data-id="cjfguk7vq000der0myqfpya7u" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -395,7 +442,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/01/Mysql根据指定数据确定分页/" data-id="cjezh0fsx001th30m9tpjbfvn" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/01/Mysql根据指定数据确定分页/" data-id="cjfguk7xh001ver0mcsi3b7du" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li></ul>
@@ -440,7 +487,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/10/15/java并发学习之StampedLock学习/" data-id="cjezh0ftr002rh30mh2v2qgns" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/10/15/java并发学习之StampedLock学习/" data-id="cjfguk7y9002ter0mt6gafsxf" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -484,7 +531,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/09/28/ReentrantReadWriteLock源码学习/" data-id="cjezh0fsz001yh30mwi0lv6kb" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/09/28/ReentrantReadWriteLock源码学习/" data-id="cjfguk7xl001zer0m8ol1w1gb" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -527,52 +574,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/09/26/CountDownLatch源码学习/" data-id="cjezh0frl000lh30mxbjgw2yo" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Reentrantlock源码学习" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/09/25/Reentrantlock源码学习/" class="article-date">
-  <time datetime="2017-09-25T06:22:06.000Z" itemprop="datePublished">2017-09-25</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/25/Reentrantlock源码学习/">Reentrantlock源码学习</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>在上文 <a href="https://houlong123.github.io/2017/09/11/java%E5%B9%B6%E5%8F%91%E5%AD%A6%E4%B9%A0%E4%B9%8BAbstractQueuedSyncchronizer%E5%AD%A6%E4%B9%A0/">AbstractQueuedSyncchronizer学习</a> 中，对AQS进行了相应的学习，知道AQS是Java并发包的一个同步基础机制。该接口有几个常用的子类，本文章主要对其中最常用的子类<code>ReentrantLock</code>类进行学习，其他子类后续再讲。</p>
-<h4 id="ReentrantLock源码学习"><a href="#ReentrantLock源码学习" class="headerlink" title="ReentrantLock源码学习"></a>ReentrantLock源码学习</h4><h5 id="内部数据结构"><a href="#内部数据结构" class="headerlink" title="内部数据结构"></a>内部数据结构</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//可重入独占锁，实现了Lock接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReentrantLock</span> <span class="keyword">implements</span> <span class="title">Lock</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Sync sync;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//锁的同步控制基础。子类分为公平锁和非公平锁，使用AQS中的state代表持有的锁数</span></span><br><span class="line">    <span class="keyword">abstract</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Sync</span> <span class="keyword">extends</span> <span class="title">AbstractQueuedSynchronizer</span> </span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//非公平锁实现</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">NonfairSync</span> <span class="keyword">extends</span> <span class="title">Sync</span> </span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//公平锁实现</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">FairSync</span> <span class="keyword">extends</span> <span class="title">Sync</span> </span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>由类实现可知，该类持有一个<code>Sync</code>对象，提供所有的同步机制。</p>
-        
-          <p class="article-more-link">
-            <a href="/2017/09/25/Reentrantlock源码学习/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/09/25/Reentrantlock源码学习/" data-id="cjezh0ft30020h30mb3alg9t7" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/09/26/CountDownLatch源码学习/" data-id="cjfguk7vx000ker0m1it081za" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -612,7 +614,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Mysql/" style="font-size: 11.67px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 18.33px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 13.33px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 16.67px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 18.33px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+      <a href="/tags/Mysql/" style="font-size: 11.67px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 13.33px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 16.67px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 18.33px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
     </div>
   </div>
 
@@ -621,7 +623,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
     </div>
   </div>
 
@@ -632,6 +634,10 @@
     <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/04/01/JVM额外知识学习/">JVM额外知识学习</a>
+          </li>
         
           <li>
             <a href="/2018/03/20/Integer类学习/">Integer类学习</a>
@@ -647,10 +653,6 @@
         
           <li>
             <a href="/2018/02/24/LinkedHashMap源码学习/">LinkedHashMap源码学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/02/02/HashMap源码学习/">HashMap源码学习</a>
           </li>
         
       </ul>

@@ -61,6 +61,51 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Reentrantlock源码学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/09/25/Reentrantlock源码学习/" class="article-date">
+  <time datetime="2017-09-25T06:22:06.000Z" itemprop="datePublished">2017-09-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/25/Reentrantlock源码学习/">Reentrantlock源码学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>在上文 <a href="https://houlong123.github.io/2017/09/11/java%E5%B9%B6%E5%8F%91%E5%AD%A6%E4%B9%A0%E4%B9%8BAbstractQueuedSyncchronizer%E5%AD%A6%E4%B9%A0/">AbstractQueuedSyncchronizer学习</a> 中，对AQS进行了相应的学习，知道AQS是Java并发包的一个同步基础机制。该接口有几个常用的子类，本文章主要对其中最常用的子类<code>ReentrantLock</code>类进行学习，其他子类后续再讲。</p>
+<h4 id="ReentrantLock源码学习"><a href="#ReentrantLock源码学习" class="headerlink" title="ReentrantLock源码学习"></a>ReentrantLock源码学习</h4><h5 id="内部数据结构"><a href="#内部数据结构" class="headerlink" title="内部数据结构"></a>内部数据结构</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//可重入独占锁，实现了Lock接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReentrantLock</span> <span class="keyword">implements</span> <span class="title">Lock</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Sync sync;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//锁的同步控制基础。子类分为公平锁和非公平锁，使用AQS中的state代表持有的锁数</span></span><br><span class="line">    <span class="keyword">abstract</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Sync</span> <span class="keyword">extends</span> <span class="title">AbstractQueuedSynchronizer</span> </span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//非公平锁实现</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">NonfairSync</span> <span class="keyword">extends</span> <span class="title">Sync</span> </span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//公平锁实现</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">FairSync</span> <span class="keyword">extends</span> <span class="title">Sync</span> </span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由类实现可知，该类持有一个<code>Sync</code>对象，提供所有的同步机制。</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/09/25/Reentrantlock源码学习/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/09/25/Reentrantlock源码学习/" data-id="cjfguk7xo0022er0m329to8a4" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-AbstractQueuedSyncchronizer源码学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/09/11/AbstractQueuedSyncchronizer源码学习/" class="article-date">
@@ -97,7 +142,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/09/11/AbstractQueuedSyncchronizer源码学习/" data-id="cjezh0fqs0003h30mqf52r5a4" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/09/11/AbstractQueuedSyncchronizer源码学习/" data-id="cjfguk7v30003er0mhznfp7bw" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -151,7 +196,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/29/JdbcTemplate学习/" data-id="cjezh0fsd001eh30mi9rompe9" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/29/JdbcTemplate学习/" data-id="cjfguk7wu001der0mr2achml5" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -191,7 +236,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/25/Mysql修改表主键/" data-id="cjezh0fsw001rh30mdzrq37ij" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/25/Mysql修改表主键/" data-id="cjfguk7xe001ser0m1tjlhesw" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li></ul>
@@ -244,7 +289,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/22/Spring-AOP源码学习/" data-id="cjezh0fte0027h30mlwev5whv" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/22/Spring-AOP源码学习/" data-id="cjfguk7xx0029er0mrsqlj3i1" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -289,7 +334,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/19/IO学习/" data-id="cjezh0fs60014h30m3h5otgwd" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/19/IO学习/" data-id="cjfguk7wh0011er0ma7e56phv" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -340,7 +385,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/18/Bean加载流程之配置文件占位符替换/" data-id="cjezh0fr6000ah30m2yjd2n0n" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/18/Bean加载流程之配置文件占位符替换/" data-id="cjfguk7vg0009er0mswt8uwn5" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -385,7 +430,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/12/Bean加载流程之BeanWrapper构建/" data-id="cjezh0fr40008h30m8fk2ybrf" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/12/Bean加载流程之BeanWrapper构建/" data-id="cjfguk7ve0008er0mcsypmzi7" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -432,7 +477,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/08/10/Bean加载流程梳理之BeanDefinitions加载/" data-id="cjezh0frd000ch30mdi5qq1hw" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/08/10/Bean加载流程梳理之BeanDefinitions加载/" data-id="cjfguk7vm000ber0mju8ynssi" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
@@ -481,54 +526,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/31/AOP学习之实现机制/" data-id="cjezh0fqj0001h30m242sewyq" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-String讲解" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/11/String讲解/" class="article-date">
-  <time datetime="2017-07-11T05:38:02.000Z" itemprop="datePublished">2017-07-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/11/String讲解/">String讲解</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="API文档描述"><a href="#API文档描述" class="headerlink" title="API文档描述"></a>API文档描述</h4><font color="gray"><i>Strings are constant; their values cannot be changed after they are created. String buffers support mutable strings. Because String objects are immutable they can be shared.<br>You’ll see that every method in the class that appears to modify a String actually creates and returns a brand new String object containing the modification. The original String is left untouched.</i></font>
-
-<h4 id="“-”-重载"><a href="#“-”-重载" class="headerlink" title="“+” 重载"></a>“+” 重载</h4><p>在String中，<code>+</code>被赋予了新的功能。该功能可以实现String字符串的连接。在对String的+操作进行反编译时，可知其内部是如何工作的。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//源码</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Concatenation</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">     String mango = <span class="string">"mango"</span>;</span><br><span class="line">     String s = <span class="string">"abc"</span> + mango + <span class="string">"def"</span> + <span class="number">47</span>;</span><br><span class="line">     System.out.println(s);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>使用<code>javac Concatenation.java</code>命令获取class文件，然后使用<code>javap -c Concatenation</code>命令得到：</p>
-        
-          <p class="article-more-link">
-            <a href="/2017/07/11/String讲解/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/07/11/String讲解/" data-id="cjezh0fth002dh30mo8lnhgiq" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/07/31/AOP学习之实现机制/" data-id="cjfguk7um0000er0mz8ra8y38" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -568,7 +566,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Mysql/" style="font-size: 11.67px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 18.33px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 13.33px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 16.67px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 18.33px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+      <a href="/tags/Mysql/" style="font-size: 11.67px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 13.33px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 16.67px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 18.33px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
     </div>
   </div>
 
@@ -577,7 +575,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
     </div>
   </div>
 
@@ -588,6 +586,10 @@
     <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/04/01/JVM额外知识学习/">JVM额外知识学习</a>
+          </li>
         
           <li>
             <a href="/2018/03/20/Integer类学习/">Integer类学习</a>
@@ -603,10 +605,6 @@
         
           <li>
             <a href="/2018/02/24/LinkedHashMap源码学习/">LinkedHashMap源码学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/02/02/HashMap源码学习/">HashMap源码学习</a>
           </li>
         
       </ul>

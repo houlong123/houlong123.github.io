@@ -61,6 +61,52 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-java基础集合源码学习之AbstractList学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/01/19/java基础集合源码学习之AbstractList学习/" class="article-date">
+  <time datetime="2018-01-19T07:30:08.000Z" itemprop="datePublished">2018-01-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/19/java基础集合源码学习之AbstractList学习/">java基础集合源码学习之AbstractList学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>在日常编程中，ArrayList是使用最多的列表。在上篇文章 <a href="https://houlong123.github.io/2018/01/17/java基础集合源码学习之AbstractCollection学习/">AbstractCollection学习</a> 的学习中，我们可以从<code>java基础集合框架图</code>中得知：ArrayList继承了<code>AbstractList</code>，并实现了<code>List</code>接口。而其中 AbstractList 则继承了<code>AbstractCollection</code>。</p>
+<h4 id="内部数据结构"><a href="#内部数据结构" class="headerlink" title="内部数据结构"></a>内部数据结构</h4><h5 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractCollection</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// ArrayList集合的修改次数</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">transient</span> <span class="keyword">int</span> modCount = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//迭代器类</span></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Itr</span> <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ListItr</span> <span class="keyword">extends</span> <span class="title">Itr</span> <span class="keyword">implements</span> <span class="title">ListIterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AbstractList继承了AbstractCollection抽象类，并实现了List接口。关于AbstractCollection已在<a href="https://houlong123.github.io/2018/01/17/java基础集合源码学习之AbstractCollection学习/">另篇文章</a>讲解。关于List接口，在下文有简述。AbstractList中唯一的一个属性为<code>modCount</code>，表示集合被修改的次数。在AbstractList的子类中，凡是涉及到修改列表的内部数据结构的方法，都是修改<code>modCount</code>的值。</p>
+<h5 id="List-源码分析"><a href="#List-源码分析" class="headerlink" title="List 源码分析"></a>List 源码分析</h5>
+        
+          <p class="article-more-link">
+            <a href="/2018/01/19/java基础集合源码学习之AbstractList学习/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2018/01/19/java基础集合源码学习之AbstractList学习/" data-id="cjfguk7y5002ner0m7bugvk16" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-java基础集合源码学习之AbstractCollection学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/01/17/java基础集合源码学习之AbstractCollection学习/" class="article-date">
@@ -95,7 +141,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/17/java基础集合源码学习之AbstractCollection学习/" data-id="cjezh0ftl002jh30m5fg0qmzq" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/17/java基础集合源码学习之AbstractCollection学习/" data-id="cjfguk7y3002jer0myc1k2w3n" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -139,7 +185,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/08/CyclicBarrier源码学习/" data-id="cjezh0fro000ph30mlg9414kf" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/08/CyclicBarrier源码学习/" data-id="cjfguk7w0000mer0m774qb8fd" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -183,7 +229,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/04/Semaphore-信号量-源码学习/" data-id="cjezh0ft60023h30mly5fgabd" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/04/Semaphore-信号量-源码学习/" data-id="cjfguk7xs0024er0mh7wywcud" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -235,7 +281,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/03/Executor框架源码学习/" data-id="cjezh0frt000sh30mk077w7te" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/03/Executor框架源码学习/" data-id="cjfguk7w5000rer0mey9vt0v2" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发/">java并发</a></li></ul>
@@ -285,7 +331,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/12/28/Linux系统dokuwiki部署/" data-id="cjezh0fsm001mh30m5vh8cuv2" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/12/28/Linux系统dokuwiki部署/" data-id="cjfguk7x9001qer0mce79bp8a" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dokuwiki部署/">dokuwiki部署</a></li></ul>
@@ -332,7 +378,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/12/25/Fork-Join框架源码学习之ForkJoinPool学习/" data-id="cjezh0frv000uh30m55hf4tdn" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/12/25/Fork-Join框架源码学习之ForkJoinPool学习/" data-id="cjfguk7w9000ter0m2yrqwdj5" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发/">java并发</a></li></ul>
@@ -377,7 +423,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/12/21/Fork-Join框架源码学习之ForkJoinTask学习/" data-id="cjezh0frz000xh30m792qdxbv" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/12/21/Fork-Join框架源码学习之ForkJoinTask学习/" data-id="cjfguk7wb000wer0mvh6a6flt" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发/">java并发</a></li></ul>
@@ -425,7 +471,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/12/12/SynchronousQueue源码解析/" data-id="cjezh0ftg002bh30mkx52exau" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/12/12/SynchronousQueue源码解析/" data-id="cjfguk7y0002fer0meh3ayhup" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -472,54 +518,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/30/DelayQueue源码学习/" data-id="cjezh0frm000nh30m882fg0qn" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-PriorityBlockingQueue源码学习" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/29/PriorityBlockingQueue源码学习/" class="article-date">
-  <time datetime="2017-11-29T07:04:04.000Z" itemprop="datePublished">2017-11-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/29/PriorityBlockingQueue源码学习/">PriorityBlockingQueue源码学习</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>PropertyBlockingQueue 是<code>基于数组实现的线程安全的无界队列，它是基于优先级，而不是FIFO队列</code>。默认情况下元素采取自然顺序升序排列，也可以自定义类实现compareTo()方法来指定元素排序规则，需要注意的是不能保证同优先级元素的顺序。虽说是无界的，但有可能会导致OutOfMemoryError异常。</p>
-<h4 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h4><p><img src="http://img.blog.csdn.net/20160708151139090?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image"></p>
-<h4 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PriorityBlockingQueue</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractQueue</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">BlockingQueue</span>&lt;<span class="title">E</span>&gt;, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//队列默认大小</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_INITIAL_CAPACITY = <span class="number">11</span>;  </span><br><span class="line">    <span class="comment">//队列最大容量，超过该容量抛OutOfMemoryError异常</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_ARRAY_SIZE = Integer.MAX_VALUE - <span class="number">8</span>;</span><br><span class="line">    <span class="comment">//优先级队列表示为平衡二叉堆。queue[0]为元素最小值。PriorityBlockingQueue 底层还是通过数组来实现的</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> Object[] queue;</span><br><span class="line">    <span class="comment">//队列元素个数 不序列化</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">int</span> size;</span><br><span class="line">    <span class="comment">//比较器。在为null时使用元素的自然排序</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> Comparator&lt;? <span class="keyword">super</span> E&gt; comparator;</span><br><span class="line">    <span class="comment">//用于队列操作的锁</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ReentrantLock lock;</span><br><span class="line">    <span class="comment">//队列非空条件</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Condition notEmpty;</span><br><span class="line">    <span class="comment">//队列扩容的 "锁" 不序列化</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> <span class="keyword">int</span> allocationSpinLock;</span><br><span class="line">    <span class="comment">//队列扩容的 "锁" 不序列化</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> <span class="keyword">int</span> allocationSpinLock;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>PriorityBlockingQueue 与ArrayBlockingQueue，LinkedBlockingQueue阻塞队列不同，它的内部只维持了一个notEmpty条件，没有notFull 条件，也就是说PriorityBlockingQueue 没有队满的概念。当队列满的时候，进行扩容，当达到最大容量时，会抛出OutOfMemoryError异常。与ArrayBlockingQueue一致的是都是维持了一个锁来控制出入队行为，且底层也是通过数组实现。而LinkedBlockingQueue是通过两个锁来进行控制。</p>
-<h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4>
-        
-          <p class="article-more-link">
-            <a href="/2017/11/29/PriorityBlockingQueue源码学习/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/29/PriorityBlockingQueue源码学习/" data-id="cjezh0fsy001vh30mr09qasv6" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/30/DelayQueue源码学习/" data-id="cjfguk7w3000per0mrv4uuan8" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -559,7 +558,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Mysql/" style="font-size: 11.67px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 18.33px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 13.33px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 16.67px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 18.33px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+      <a href="/tags/Mysql/" style="font-size: 11.67px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 13.33px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 16.67px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 18.33px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
     </div>
   </div>
 
@@ -568,7 +567,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
     </div>
   </div>
 
@@ -579,6 +578,10 @@
     <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/04/01/JVM额外知识学习/">JVM额外知识学习</a>
+          </li>
         
           <li>
             <a href="/2018/03/20/Integer类学习/">Integer类学习</a>
@@ -594,10 +597,6 @@
         
           <li>
             <a href="/2018/02/24/LinkedHashMap源码学习/">LinkedHashMap源码学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/02/02/HashMap源码学习/">HashMap源码学习</a>
           </li>
         
       </ul>

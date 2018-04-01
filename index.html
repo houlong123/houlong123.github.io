@@ -61,6 +61,60 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-JVM额外知识学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/04/01/JVM额外知识学习/" class="article-date">
+  <time datetime="2018-04-01T13:22:32.000Z" itemprop="datePublished">2018-04-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/01/JVM额外知识学习/">JVM额外知识学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="GC日志分析"><a href="#GC日志分析" class="headerlink" title="GC日志分析"></a>GC日志分析</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0.303: [Full GC (System.gc()) [PSYoungGen: 464K-&gt;0K(76288K)] [ParOldGen: 8K-&gt;428K(175104K)] 472K-&gt;428K(251392K), </span><br><span class="line">[Metaspace: 3086K-&gt;3086K(1056768K)], 0.0058612 secs] [Times: user=0.01 sys=0.00, real=0.00 secs]</span><br></pre></td></tr></table></figure>
+<h5 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h5><ol>
+<li><p><font color="red">0.303</font>：表示 <font color="red"><strong>GC发生的时间</strong></font>，从java虚拟机启动以来经过的秒数。</p>
+</li>
+<li><p><font color="red">[Full GC (System.gc()) </font>：表示 <font color="red"><strong>垃圾收集的停顿类型</strong></font>。有 <strong><code>[GC</code>, <code>[Full</code> , <code>[Full GC(System.gc())</code>类型</strong>。 其中，有 [Full 说明GC过程中发生了STW。如果调用了System.gc()方法触发了收集，则显示：[Full GC(System.gc())</p>
+</li>
+<li><font color="red">[PSYoungGen</font>：表示 <font color="red"><strong>GC发生区域</strong></font>。有 <code>[DefNew</code>、<code>[Tenured</code>、<code>[Perm</code>等类型。 此处显示的区域名称与使用GC的垃圾收集器有关。<font color="gray">Serial收集器中的新生代名为“Default New Generation”，所以显示的是“[DefNew”，如果是ParNew收集器，新生代名称就会变为“[ParNew”，意为“Parallel New Generation”。如果采用Parallel Scavenge收集器，那它配套的新生代称为“PSYoungGen”，老年代和永久代同理，名称也是由收集器决定的。</font>
+</li>
+<li><font color="red">464K-&gt;0K(76288K)</font>：表示 <font color="red"><strong>GC前该内存区域已使用容量-＞GC后该内存区域已使用容量（该内存区域总容量）</strong></font>
+
+</li>
+</ol>
+        
+          <p class="article-more-link">
+            <a href="/2018/04/01/JVM额外知识学习/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2018/04/01/JVM额外知识学习/" data-id="cjfguk7ww001ger0me1m7ebof" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Integer类学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/03/20/Integer类学习/" class="article-date">
@@ -93,7 +147,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/03/20/Integer类学习/" data-id="cjezh0fs2000zh30m17mv1lck" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/03/20/Integer类学习/" data-id="cjfguk7wm0016er0mi6ggco1u" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -139,7 +193,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/03/18/JVM-学习/" data-id="cjezh0fsc001ch30mv0h2dxti" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/03/18/JVM-学习/" data-id="cjfguk7wr001ber0m0zux0sb5" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -184,7 +238,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/02/26/TreeMap源码学习/" data-id="cjezh0fti002fh30mtd0dk5fd" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/02/26/TreeMap源码学习/" data-id="cjfguk7y1002her0mbkybcrvh" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -231,7 +285,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/02/24/LinkedHashMap源码学习/" data-id="cjezh0fsj001jh30mkpwyvaxb" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/02/24/LinkedHashMap源码学习/" data-id="cjfguk7x4001ler0m3cg4gmds" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -276,7 +330,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/02/02/HashMap源码学习/" data-id="cjezh0fs80017h30m9klwcuvq" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/02/02/HashMap源码学习/" data-id="cjfguk7wj0013er0md7q7na5f" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -320,7 +374,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/30/AbstractMap源码学习/" data-id="cjezh0fqb0000h30mr3ortdum" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/30/AbstractMap源码学习/" data-id="cjfguk7ut0001er0m0oovcpk3" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -367,7 +421,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/29/Set相关集合源码学习/" data-id="cjezh0ftc0025h30mc0266ddp" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/29/Set相关集合源码学习/" data-id="cjfguk7xw0027er0mr56hfd6s" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -414,7 +468,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/26/LinkedList源码学习/" data-id="cjezh0fsq001oh30mow96u1j6" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/26/LinkedList源码学习/" data-id="cjfguk7x7001ner0mhskngd25" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -460,53 +514,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/23/ArrayList源码学习/" data-id="cjezh0fr10005h30m96owjc8o" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-java基础集合源码学习之AbstractList学习" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/01/19/java基础集合源码学习之AbstractList学习/" class="article-date">
-  <time datetime="2018-01-19T07:30:08.000Z" itemprop="datePublished">2018-01-19</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/19/java基础集合源码学习之AbstractList学习/">java基础集合源码学习之AbstractList学习</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>在日常编程中，ArrayList是使用最多的列表。在上篇文章 <a href="https://houlong123.github.io/2018/01/17/java基础集合源码学习之AbstractCollection学习/">AbstractCollection学习</a> 的学习中，我们可以从<code>java基础集合框架图</code>中得知：ArrayList继承了<code>AbstractList</code>，并实现了<code>List</code>接口。而其中 AbstractList 则继承了<code>AbstractCollection</code>。</p>
-<h4 id="内部数据结构"><a href="#内部数据结构" class="headerlink" title="内部数据结构"></a>内部数据结构</h4><h5 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractCollection</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// ArrayList集合的修改次数</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">transient</span> <span class="keyword">int</span> modCount = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//迭代器类</span></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Itr</span> <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ListItr</span> <span class="keyword">extends</span> <span class="title">Itr</span> <span class="keyword">implements</span> <span class="title">ListIterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>AbstractList继承了AbstractCollection抽象类，并实现了List接口。关于AbstractCollection已在<a href="https://houlong123.github.io/2018/01/17/java基础集合源码学习之AbstractCollection学习/">另篇文章</a>讲解。关于List接口，在下文有简述。AbstractList中唯一的一个属性为<code>modCount</code>，表示集合被修改的次数。在AbstractList的子类中，凡是涉及到修改列表的内部数据结构的方法，都是修改<code>modCount</code>的值。</p>
-<h5 id="List-源码分析"><a href="#List-源码分析" class="headerlink" title="List 源码分析"></a>List 源码分析</h5>
-        
-          <p class="article-more-link">
-            <a href="/2018/01/19/java基础集合源码学习之AbstractList学习/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/01/19/java基础集合源码学习之AbstractList学习/" data-id="cjezh0ftk002hh30mf8k1vnn4" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2018/01/23/ArrayList源码学习/" data-id="cjfguk7vc0005er0mkebfpli8" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java基础集合/">java基础集合</a></li></ul>
@@ -546,7 +554,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Mysql/" style="font-size: 11.67px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 18.33px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 13.33px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 16.67px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 18.33px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+      <a href="/tags/Mysql/" style="font-size: 11.67px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 13.33px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 16.67px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 18.33px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
     </div>
   </div>
 
@@ -555,7 +563,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
     </div>
   </div>
 
@@ -566,6 +574,10 @@
     <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/04/01/JVM额外知识学习/">JVM额外知识学习</a>
+          </li>
         
           <li>
             <a href="/2018/03/20/Integer类学习/">Integer类学习</a>
@@ -581,10 +593,6 @@
         
           <li>
             <a href="/2018/02/24/LinkedHashMap源码学习/">LinkedHashMap源码学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/02/02/HashMap源码学习/">HashMap源码学习</a>
           </li>
         
       </ul>
