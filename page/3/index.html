@@ -61,6 +61,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-DelayQueue源码学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/30/DelayQueue源码学习/" class="article-date">
+  <time datetime="2017-11-30T07:07:26.000Z" itemprop="datePublished">2017-11-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/30/DelayQueue源码学习/">DelayQueue源码学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p><font color="red">DelayQueue是一个支持延迟获取元素的无界阻塞队列。</font>队列内部使用priorityQueue实现相应操作。存储的元素必须要继承 <code>Delayed接口</code>。PriorityQueue 和PriorityBlockingQueue队列一样，都是一种优先级的队列，内部实现原理也是使用的二叉堆。</p>
+<h4 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DelayQueue</span>&lt;<span class="title">E</span> <span class="keyword">extends</span> <span class="title">Delayed</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractQueue</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">BlockingQueue</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">//可重入锁</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">transient</span> ReentrantLock lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line">    <span class="comment">//存储元素的优先级队列</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> PriorityQueue&lt;E&gt; q = <span class="keyword">new</span> PriorityQueue&lt;E&gt;();</span><br><span class="line">    <span class="comment">//等待队列头部元素的指定线程</span></span><br><span class="line">    <span class="keyword">private</span> Thread leader = <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">//条件控制，表示是否可以从队列中取数据</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Condition available = lock.newCondition();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由DelayQueue类的内部数据结构可知，其内部存储的元素要实现 <code>Delayed接口</code>。在DelayQueue类中，还维持了一个 <code>PriorityQueue类</code> 的对象，用于实现DelayQueue队列的相应操作。</p>
+<p>从<code>Delayed接口</code>的数据结构可以看出，它继承了 <code>Comparable接口</code>，这为优先级队列提供了一种排序机制。<code>Delayed接口</code>内部还有一个 <code>getDelay()</code> 方法，用于返回剩余的延迟时间：<code>零值或负值表示这个延迟时间已经过去了</code>。DelayQueue队列就是根据这个条件来控制延时获取元素的。</p>
+<h4 id="Delayed接口"><a href="#Delayed接口" class="headerlink" title="Delayed接口"></a>Delayed接口</h4>
+        
+          <p class="article-more-link">
+            <a href="/2017/11/30/DelayQueue源码学习/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://houlong123.github.io/2017/11/30/DelayQueue源码学习/" data-id="cjfhp70sj000pjo0ml4g4p9a0" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-PriorityBlockingQueue源码学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/11/29/PriorityBlockingQueue源码学习/" class="article-date">
@@ -96,7 +143,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/29/PriorityBlockingQueue源码学习/" data-id="cjfguk7xi001xer0m6wizva0m" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/29/PriorityBlockingQueue源码学习/" data-id="cjfhp70u0001xjo0mcez9t3v4" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -143,7 +190,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/21/LinkedBlockingQueue源码学习/" data-id="cjfguk7wy001ier0m9i6t5gfw" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/21/LinkedBlockingQueue源码学习/" data-id="cjfhp70tj001ijo0m8sctocwi" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -189,7 +236,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/16/ArrayBlockingQueue源码学习/" data-id="cjfguk7v60004er0m32d0fj48" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/16/ArrayBlockingQueue源码学习/" data-id="cjfhp70rm0004jo0mye29ooec" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -237,7 +284,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/14/CopyOnWriteArrayList源码学习/" data-id="cjfguk7vv000her0mt96n8ucv" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/14/CopyOnWriteArrayList源码学习/" data-id="cjfhp70s9000hjo0migk9i07y" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -283,7 +330,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/10/ConcurrentLinkedQueue源码学习/" data-id="cjfguk7vt000fer0mbv46e4h3" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/10/ConcurrentLinkedQueue源码学习/" data-id="cjfhp70s6000djo0mgn52stl0" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -329,7 +376,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/07/ConcurrentHashMap源码学习/" data-id="cjfguk7vq000der0myqfpya7u" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/07/ConcurrentHashMap源码学习/" data-id="cjfhp70s7000fjo0m4fsc9489" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发集合/">java并发集合</a></li></ul>
@@ -442,7 +489,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/11/01/Mysql根据指定数据确定分页/" data-id="cjfguk7xh001ver0mcsi3b7du" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/11/01/Mysql根据指定数据确定分页/" data-id="cjfhp70tz001vjo0muhylzrvn" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mysql/">Mysql</a></li></ul>
@@ -487,7 +534,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/10/15/java并发学习之StampedLock学习/" data-id="cjfguk7y9002ter0mt6gafsxf" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/10/15/java并发学习之StampedLock学习/" data-id="cjfhp70uq002pjo0mlcrjj8ow" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -531,50 +578,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/09/28/ReentrantReadWriteLock源码学习/" data-id="cjfguk7xl001zer0m8ol1w1gb" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-CountDownLatch源码学习" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/09/26/CountDownLatch源码学习/" class="article-date">
-  <time datetime="2017-09-26T06:26:42.000Z" itemprop="datePublished">2017-09-26</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/26/CountDownLatch源码学习/">CountDownLatch源码学习</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>在上文 <a href="https://houlong123.github.io/2017/09/25/java%E5%B9%B6%E5%8F%91%E5%AD%A6%E4%B9%A0%E4%B9%8BReentrantlock%E5%AD%A6%E4%B9%A0/">java并发学习之Reentrantlock学习</a> 中，讲解了AQS的子类独占锁<code>Reentrantlock</code>，本节讲解一下AQS的子类共享锁实现。<code>CountDownLatch</code>是共享锁的一种实现。</p>
-        
-          <p class="article-more-link">
-            <a href="/2017/09/26/CountDownLatch源码学习/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2017/09/26/CountDownLatch源码学习/" data-id="cjfguk7vx000ker0m1it081za" class="article-share-link">Teilen</a>
+      <a data-url="https://houlong123.github.io/2017/09/28/ReentrantReadWriteLock源码学习/" data-id="cjfhp70u3001zjo0m8fmr3y3a" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java并发锁/">java并发锁</a></li></ul>
@@ -614,7 +618,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Mysql/" style="font-size: 11.67px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java基础集合/" style="font-size: 20px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 13.33px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 16.67px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 18.33px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
+      <a href="/tags/Mysql/" style="font-size: 11.43px;">Mysql</a> <a href="/tags/Spring/" style="font-size: 14.29px;">Spring</a> <a href="/tags/dokuwiki部署/" style="font-size: 10px;">dokuwiki部署</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java基础集合/" style="font-size: 18.57px;">java基础集合</a> <a href="/tags/java并发/" style="font-size: 12.86px;">java并发</a> <a href="/tags/java并发锁/" style="font-size: 15.71px;">java并发锁</a> <a href="/tags/java并发集合/" style="font-size: 17.14px;">java并发集合</a> <a href="/tags/部署GitHub-Page/" style="font-size: 10px;">部署GitHub Page</a>
     </div>
   </div>
 
@@ -636,6 +640,10 @@
       <ul>
         
           <li>
+            <a href="/2018/04/02/类加载顺序/">类加载顺序</a>
+          </li>
+        
+          <li>
             <a href="/2018/04/01/JVM额外知识学习/">JVM额外知识学习</a>
           </li>
         
@@ -649,10 +657,6 @@
         
           <li>
             <a href="/2018/02/26/TreeMap源码学习/">TreeMap源码学习</a>
-          </li>
-        
-          <li>
-            <a href="/2018/02/24/LinkedHashMap源码学习/">LinkedHashMap源码学习</a>
           </li>
         
       </ul>
