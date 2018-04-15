@@ -7,13 +7,13 @@
   
   <title>JVM 学习 | 而今伊始，命途自闯</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言关于java虚拟机的学习，网上有许多学习文章。同时周志明编写的图书：《深入理解JVM虚拟机》也是JVM学习者必读图书之一。虽说之前也有相关的学习过，但是一直没有进行梳理，导致知识相对很零散，所以为了日后方便自己或他人学习，本文将对JVM进行简略的知识梳理。 内存模型Java内存模型，往往是指Java程序在运行时内存的模型，而Java代码是运行在Java虚拟机之上的，由Java虚拟机通过解释执行">
+  <meta name="description" content="前言关于java虚拟机的学习，网上有许多学习文章。同时周志明老师编写的图书：《深入理解JVM虚拟机》也是JVM学习者必读图书之一。虽说之前也有相关的学习过，但是一直没有进行梳理，导致知识相对很零散，所以为了日后方便自己或他人学习，本文将对JVM进行简略的知识梳理。 内存模型Java内存模型，往往是指Java程序在运行时内存的模型，而Java代码是运行在Java虚拟机之上的，由Java虚拟机通过解释">
 <meta name="keywords" content="java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JVM 学习">
 <meta property="og:url" content="https://houlong123.github.io/2018/03/18/JVM-学习/index.html">
 <meta property="og:site_name" content="而今伊始，命途自闯">
-<meta property="og:description" content="前言关于java虚拟机的学习，网上有许多学习文章。同时周志明编写的图书：《深入理解JVM虚拟机》也是JVM学习者必读图书之一。虽说之前也有相关的学习过，但是一直没有进行梳理，导致知识相对很零散，所以为了日后方便自己或他人学习，本文将对JVM进行简略的知识梳理。 内存模型Java内存模型，往往是指Java程序在运行时内存的模型，而Java代码是运行在Java虚拟机之上的，由Java虚拟机通过解释执行">
+<meta property="og:description" content="前言关于java虚拟机的学习，网上有许多学习文章。同时周志明老师编写的图书：《深入理解JVM虚拟机》也是JVM学习者必读图书之一。虽说之前也有相关的学习过，但是一直没有进行梳理，导致知识相对很零散，所以为了日后方便自己或他人学习，本文将对JVM进行简略的知识梳理。 内存模型Java内存模型，往往是指Java程序在运行时内存的模型，而Java代码是运行在Java虚拟机之上的，由Java虚拟机通过解释">
 <meta property="og:image" content="http://gityuan.com/images/jvm/jvm_memory_1.png">
 <meta property="og:image" content="http://static.oschina.net/uploads/space/2014/0329/195605_gspc_1028150.png">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2654250-59c54de8bc3465c8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700">
@@ -30,10 +30,10 @@
 <meta property="og:image" content="http://on66azf8w.bkt.clouddn.com/blog/20170403/200928395.png">
 <meta property="og:image" content="http://img.blog.csdn.net/20170818112709577?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMDY1NjM2MA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://on66azf8w.bkt.clouddn.com/blog/20170403/203005227.png">
-<meta property="og:updated_time" content="2018-03-18T04:09:25.345Z">
+<meta property="og:updated_time" content="2018-04-02T05:43:25.921Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JVM 学习">
-<meta name="twitter:description" content="前言关于java虚拟机的学习，网上有许多学习文章。同时周志明编写的图书：《深入理解JVM虚拟机》也是JVM学习者必读图书之一。虽说之前也有相关的学习过，但是一直没有进行梳理，导致知识相对很零散，所以为了日后方便自己或他人学习，本文将对JVM进行简略的知识梳理。 内存模型Java内存模型，往往是指Java程序在运行时内存的模型，而Java代码是运行在Java虚拟机之上的，由Java虚拟机通过解释执行">
+<meta name="twitter:description" content="前言关于java虚拟机的学习，网上有许多学习文章。同时周志明老师编写的图书：《深入理解JVM虚拟机》也是JVM学习者必读图书之一。虽说之前也有相关的学习过，但是一直没有进行梳理，导致知识相对很零散，所以为了日后方便自己或他人学习，本文将对JVM进行简略的知识梳理。 内存模型Java内存模型，往往是指Java程序在运行时内存的模型，而Java代码是运行在Java虚拟机之上的，由Java虚拟机通过解释">
 <meta name="twitter:image" content="http://gityuan.com/images/jvm/jvm_memory_1.png">
   
     <link rel="alternate" href="/atom.xml" title="而今伊始，命途自闯" type="application/atom+xml">
@@ -72,7 +72,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://houlong123.github.io"></form>
@@ -103,7 +103,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>关于java虚拟机的学习，网上有许多学习文章。同时周志明编写的图书：《深入理解JVM虚拟机》也是JVM学习者必读图书之一。虽说之前也有相关的学习过，但是一直没有进行梳理，导致知识相对很零散，所以为了日后方便自己或他人学习，本文将对JVM进行简略的知识梳理。</p>
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>关于java虚拟机的学习，网上有许多学习文章。同时周志明老师编写的图书：《深入理解JVM虚拟机》也是JVM学习者必读图书之一。虽说之前也有相关的学习过，但是一直没有进行梳理，导致知识相对很零散，所以为了日后方便自己或他人学习，本文将对JVM进行简略的知识梳理。</p>
 <h4 id="内存模型"><a href="#内存模型" class="headerlink" title="内存模型"></a>内存模型</h4><p>Java内存模型，往往是指Java程序在运行时内存的模型，而Java代码是运行在Java虚拟机之上的，由Java虚拟机通过解释执行(解释器)或编译执行(即时编译器)来完成，故Java内存模型，也就是指Java虚拟机的运行时内存模型。</p>
 <p><img src="http://gityuan.com/images/jvm/jvm_memory_1.png" alt="JVM运行时数据区"></p>
 <p>JVM运行时数据区，包括5部分：<font color="red">堆，方法区，程序计数器，虚拟机栈，本地方法栈。</font>在这5部分中，其中：<code>堆，方法区是共享数据区，即所有线程共享的内存区域；程序计数器，虚拟机栈，本地方法栈是线程私有，即每个线程都会有自己的独立内存区域，各线程之间互不影响，独立存储</code>。</p>
@@ -427,7 +427,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://houlong123.github.io/2018/03/18/JVM-学习/" data-id="cjfhpc29z001bl80moyii9nco" class="article-share-link">Share</a>
+      <a data-url="https://houlong123.github.io/2018/03/18/JVM-学习/" data-id="cjg1gn6zk0016ji0mch43mde7" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -439,7 +439,7 @@
 <nav id="article-nav">
   
     <a href="/2018/03/20/Integer类学习/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
+      <strong class="article-nav-caption">Neuer</strong>
       <div class="article-nav-title">
         
           Integer类学习
@@ -449,7 +449,7 @@
   
   
     <a href="/2018/02/26/TreeMap源码学习/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
+      <strong class="article-nav-caption">Älter</strong>
       <div class="article-nav-title">TreeMap源码学习</div>
     </a>
   
@@ -486,7 +486,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Archiv</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
     </div>
@@ -496,7 +496,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
         
